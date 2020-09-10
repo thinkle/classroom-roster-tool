@@ -1,0 +1,17 @@
+{
+  "timeZone": "America/New_York",
+  "dependencies": {
+    "enabledAdvancedServices": [{
+      "userSymbol": "Classroom",
+      "serviceId": "classroom",
+      "version": "v1"
+    }],
+    "libraries": [{
+      "userSymbol": "SHL",
+      "libraryId": "1Zvt2EMkXycPEi6Kbpi8bCm3uHVxFOHuyj2_NmyS53Uo_1IakSjAQfhDA",
+      "version": "7"
+    }]
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8"
+}
