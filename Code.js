@@ -3,6 +3,16 @@ function onOpen () {
     'Roster Tool'
     )
   .addItem('Activate','activate')
+  .addItem('Update course list','fetchAllTheCourses')
+  .addItem('Update teacher list','fetchAllTheTeachers')
+  .addItem('Update student list','fetchAllTheStudents')
+  .addSeparator()
+  .addItem('Add teachers','addTeachers')
+  .addItem('Add students','addStudents')
+  .addItem('Add courses','addCourses')
+  .addSeparator()
+  .addItem('Remove students','removeStudents')
+  .addItem('Remove teachers','removeTeachers')
   .addToUi();
 }
 
