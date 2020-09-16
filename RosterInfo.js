@@ -1,41 +1,64 @@
-
-function fetchAllTheStudents () {
-  SpreadsheetApp.getUi().alert('NOT IMPLEMENTED YET');
-}
-
 function fetchAllTheTeachers () {
   const cs = CoursesSheet();
   const courses = cs.read();
   const ts = TeachersSheet();
-  ts.reset();
   let teachers = [];
   let first = true
   for (let course of courses) {
     if (first) {
       first = false // skip first row
     } else {
-      Classroom.Courses.Teachers.list(course.id).teachers.map((t)=>ts.push({...t,email:t.profile.emailAddress,name:t.profile.name.fullName}))
+      if (!course.fetchedTeachers) {
+        try {
+          Classroom.Courses.Teachers.list(course.id).teachers.map((t)=>ts.push({...t,email:t.profile.emailAddress,name:t.profile.name.fullName}))
+          course.fetchedTeachers = true
+        } catch (err) {
+          course.fetchedTeachers = JSON.stringify(err);
+        }
+      }
     }
   }
+}
+
+function resetTeachers () {
+  const ts = TeachersSheet();
+  ts.reset();
+}
+
+function resetStudents () {
+  const ss = StudentsSheet();
+  ss.reset();
 }
 
 function fetchAllTheStudents () {
   const cs = CoursesSheet();
   const courses = cs.read();
-  const ts = StudentsSheet();
-  ts.reset();
+  const ss = StudentsSheet();
+  //ss.reset();
   let teachers = [];
   let first = true
+  let count = 0;
   for (let course of courses) {
     if (first) {
       first = false // skip first row
     } else {
-      let students = Classroom.Courses.Students.list(course.id).students
-      if (students) {
-        students.map((t)=>ts.push({...t,email:t.profile.emailAddress,name:t.profile.name.fullName}))
+      if (!course.fetchedStudents) {
+        try {
+          let students = Classroom.Courses.Students.list(course.id).students
+          if (students) {
+            students.map((t)=>ss.push({...t,email:t.profile.emailAddress,name:t.profile.name.fullName}))
+          }
+          course.fetchedStudents = true;
+        } catch (err) {
+            course.fetchedStudents = JSON.stringify(err);
+        }
+        
       }
     }
-  }
+    SpreadsheetApp.flush();
+    count += 1;
+    console.log('Completed students for ',count,'of',courses.length,course)
+  }  
 }
 
 function fetchAllTheCourses() {
@@ -63,7 +86,7 @@ function TeachersSheet () {
 
 function CoursesSheet () {
     return JsonSheet(
-        { headers : ['id','name','ownerId','courseState','enrollmentCode','description','teacherFolder','teacherGroupEmail','updateTime','guardiansEnabled'],
+        { headers : ['id','name','ownerId','courseState','enrollmentCode','description','teacherFolder','teacherGroupEmail','updateTime','guardiansEnabled','fetchedStudents','fetchedTeachers'],
           sheetName : `Courses`,
           fetch : function (cs) {
               const courseArgs = {courseStates:['Active','Provisioned']}
