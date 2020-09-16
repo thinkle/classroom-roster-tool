@@ -13,7 +13,7 @@ function addTeachers () {
       first = false
     }
     else {
-      if (row.id && !row.Added) {
+      if (row.id && !row.Added && !row.Remove) {
         if(row['Already in class']) {
           row.Status = 'SKIPPED: ALREADY IN CLASS'
         } else if (!row.Teacher) {
@@ -44,9 +44,17 @@ function removeStudents () {
       first = false
     }
     else {
-      if (row.id && row.Student && row.Remove) {
-        Classroom.Courses.Students.remove(row.id+'',row.Student);
-        row.Status = 'REMOVED'
+      if (row.id && row.Student && row.Remove && !row.Status) {
+        try {
+          Classroom.Courses.Students.remove(row.id+'',row.Student);
+          row.Status = 'REMOVED'
+          
+        }
+        catch (err) {
+          row.Added = 'ERR'
+          row.Status = JSON.stringify(err);
+        }
+        SpreadsheetApp.flush();
       }
     }
   }
@@ -58,19 +66,23 @@ function addStudents () {
             .getSheetByName('Assign Students')
             .getDataRange());  
   let first = true
+  let count = 0;
+  console.log('Looking at ',students.length,'rows of data');
   for (let row of students) {
+    count += 1;
     if (first) {
       // skip header
       first = false
     }
     else {
-      if (row.id && !row.Added) {
+      if (row.id && !row.Added && !row.Remove) {
         if(row['Already in class']) {
           row.Status = 'SKIPPED: ALREADY IN CLASS'
         } else if (!row.Student) {
           row.Status = 'SKIPPED: No student'
         } else {
           row.Status = 'Adding...'
+          console.log('Adding ',row,count,'of',students.length);
           try {
             let result = Classroom.Courses.Students.create(
               {userId:row.Student},
@@ -79,7 +91,7 @@ function addStudents () {
             row.Status = JSON.stringify(result);
             row.Added = true;          
           } catch (err) {
-            if (err.details.message.indexOf('already')>-1) {
+            if (err.details && err.details.message && err.details.message.indexOf('already')>-1) {
               row.Status = JSON.stringify(err.details);
               row.Added = 'Already exists';
             } else {
@@ -87,9 +99,15 @@ function addStudents () {
               row.Added = 'ERR'
             }
           }
+          console.log('Finished attempting/adding ',row.Student,row.id);
+          SpreadsheetApp.flush();
         }
           
       }
+    }
+    if (count % 100 == 0) {
+      console.log('On row ',count);
+      SpreadsheetApp.flush();
     }
   }
 }
