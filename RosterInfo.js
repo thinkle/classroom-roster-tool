@@ -67,6 +67,14 @@ function fetchAllTheCourses() {
     cs.fetch();
     return cs;
 }
+
+function fetchArchivedCourses () {
+      const cs = ArchivedCoursesSheet();
+    cs.reset();
+    cs.fetch();
+    return cs;
+}
+
 function StudentsSheet () {
    return JsonSheet(
     { headers : ['courseId','userId','email','name','profile'],
@@ -83,6 +91,25 @@ function TeachersSheet () {
     );     
 }
 
+
+function ArchivedCoursesSheet () {
+    return JsonSheet(
+        { headers : ['id','updateTime','name','ownerId','courseState','enrollmentCode','description','teacherFolder','teacherGroupEmail','guardiansEnabled','fetchedStudents','fetchedTeachers'],
+          sheetName : `Courses-Archived`,
+          fetch : function (cs) {
+              const courseArgs = {courseStates:['Archived']}
+              var response = Classroom.Courses.list(courseArgs)
+              if (response && response.courses) {cs.extend(response.courses)};
+              while (response.nextPageToken) {
+                  console.log('Get another batch...');
+                  courseArgs.pageToken = response.nextPageToken;
+                  response = Classroom.Courses.list(courseArgs);
+                if (response && response.courses) {cs.extend(response.courses);}
+              }
+          }
+        }
+    );
+}
 
 function CoursesSheet () {
     return JsonSheet(
@@ -106,7 +133,9 @@ function CoursesSheet () {
 function JsonSheet ({headers, sheetName, parentFolder, fetch, format}) {
     
     const ss = SpreadsheetApp.getActiveSpreadsheet(); //Cache().getSheet(sheetName,parentFolder);
-    const sheet = ss.getSheetByName(sheetName); //ss.getActiveSheet();
+    const sheet = ss.getSheetByName(sheetName) || ss.insertSheet(sheetName); //ss.getActiveSheet();
+
+    
 
     return {
         reset () {
