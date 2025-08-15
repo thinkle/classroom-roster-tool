@@ -4,7 +4,7 @@ Code for updating google rosters
 
 function getGroupMembers (groupEmail) {
   console.log('Email is',groupEmail);
-  let groupSettings = AdminGroupsSettings.Groups.get(groupEmail);
+  /*let groupSettings = AdminGroupsSettings.Groups.get(groupEmail);
   
   if (groupSettings.whoCanViewMembership != ' ALL_IN_DOMAIN_CAN_VIEW') {
     AdminGroupsSettings.Groups.patch(
@@ -12,9 +12,12 @@ function getGroupMembers (groupEmail) {
         groupEmail
      );
   }
-  console.log('Group permissions for viewing are ',groupSettings.whoCanViewMembership)
+  console.log('Group permissions for viewing are ',groupSettings.whoCanViewMembership) */
   let group = GroupsApp.getGroupByEmail(groupEmail);
-  let members = group.getUsers().map((u)=>u.getEmail());
+  let members = AdminDirectory.Members.list(groupEmail).members.map((member)=>member.email);
+  //let members = group.getUsers().map((u)=>u.getEmail());
+  console.log('Members are...',members);
+  try {
   let subGroups = group.getGroups()
   for (let sub of subGroups) {
     try {
@@ -22,12 +25,14 @@ function getGroupMembers (groupEmail) {
     } catch (err) {
       console.log('Error with subgroup: ',sub.getEmail());
     }
+  } } catch (err) {
+    console.log('Error with sub-groups',err);
   }
   return members;
 }
 
 function testGroupMembers () {
-  let result = getGroupMembers('ms-math@innovationcharter.org');
+  let result = getGroupMembers('ms-student-services@innovationcharter.org');
   console.log('HS English=',result);
 }
 
@@ -171,7 +176,12 @@ function removeStudents () {
 
 
 function addStudents () {
-   let students = SHL.Table(SpreadsheetApp.getActiveSpreadsheet()
+  const lock = LockService.getScriptLock();  
+  if (!lock.tryLock(60)) {
+    console.log('Function addStudents already running; skipping execution.');
+    return;
+  }
+  let students = SHL.Table(SpreadsheetApp.getActiveSpreadsheet()
             .getSheetByName('Assign Students')
             .getDataRange());  
   let first = true
@@ -191,7 +201,7 @@ function addStudents () {
           row.Status = 'SKIPPED: No student'
         } else {
           row.Status = 'Adding...'
-          console.log('Adding ',row,count,'of',students.length);
+          console.log('Adding ',count,'of',students.length,row.Student,row.id);
           try {
             let result = Classroom.Courses.Students.create(
               {userId:row.Student},
@@ -219,9 +229,30 @@ function addStudents () {
       SpreadsheetApp.flush();
     }
   }
+  lock.releaseLock()
+}
+
+function fixRoom (roomIdentifier) {
+  if (!isNaN(Number(roomIdentifier))) {
+    return "Room "+roomIdentifier;
+  } else {
+    return roomIdentifier;
+  }
+}
+
+function testFixRoom () {
+  console.log('Fix Library: ',fixRoom('Library'));
+  console.log('Fix 107',fixRoom(107));
+  console.log('Fix "107"',fixRoom("107"));
 }
 
 function addCourses () {
+  const lock = LockService.getScriptLock()
+  let success = lock.tryLock(60);
+  if (!success) {
+    console.log('Already adding courses - canceling');
+    return;
+  }
   let courses = SHL.Table(SpreadsheetApp.getActiveSpreadsheet()
                           .getSheetByName('Create Courses')
                           .getDataRange());
@@ -235,7 +266,7 @@ function addCourses () {
           {name:row.name,
            section:row.section,
            description:row.description,
-           room:row.room,
+           room:fixRoom(row.room),
            ownerId:row.ownerId,
            courseState:row.courseState, 
            guardiansEnabled : row.guardiansEnabled || true,
@@ -250,6 +281,7 @@ function addCourses () {
       }
     }
   }
+  lock.releaseLock()
 }
 
 function addSupportTeachers () {
