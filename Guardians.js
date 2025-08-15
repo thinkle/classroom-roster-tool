@@ -1,3 +1,13 @@
+/** Assumes a sheet called GuardianInvites with
+ *
+ * Student | Guardian | Invited | InvitationDate | state
+ *
+ * And a sheet called Guardians with
+ *
+ * student | studentId | guardianId | emailAddress | name | invitedEmailAddress
+ *
+ **/
+
 function generateInvites() {
   let invites = SHL.Table(
     SpreadsheetApp.getActiveSpreadsheet()
