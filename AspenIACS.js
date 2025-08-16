@@ -8,54 +8,33 @@
  * @returns {Object} Google Classroom parameters
  */
 function iacsStandardConverter(sisData) {
+  console.log('IACS Converter converting', JSON.stringify(sisData, null, 2));
   const cls = sisData.class;
-  const course = sisData.course;
+  let name = `${cls.course.courseCode}-${cls.classCode}: ${cls.title || "Untitled"}`;
 
-  // Build section with periods and term info
-  let section = "";
-  if (cls.periods && cls.periods.length > 0) {
-    section = `Period ${cls.periods.join(", ")}`;
-  }
-
-  // Add term info to section
-  if (cls.termCodes && cls.termCodes.length > 0) {
-    const termInfo = cls.termCodes.join(", ");
-    section = section ? `${section} - ${termInfo}` : termInfo;
-  }
-
-  // Build title: {classCode}-{section}: {title}
-  let name = cls.title || "Untitled Course";
-  if (cls.classCode) {
-    name = `${cls.classCode}-${section}: ${name}`;
-  } else {
-    name = `${section}: ${name}`;
-  }
-
-  // Build description: Rm 205, '25-'26 S2 (no newlines, clean and simple)
+  // Build description: TERM CODE SHORT YEAR LOCATION
   let description = "";
 
-  // Add room if available
-  if (cls.location) {
-    description = `Rm ${cls.location}`;
+  // Add term codes
+  if (cls.termCodes && cls.termCodes.length > 0) {
+    description = cls.termCodes.join(", ");
   }
 
   // Add school year in short format
   if (cls.schoolYearTitle) {
     const shortYear = extractShortSchoolYear(cls.schoolYearTitle);
     if (shortYear) {
-      description = description ? `${description}, '${shortYear}` : `'${shortYear}`;
+      description = description ? `${description} '${shortYear}` : `'${shortYear}`;
     }
   }
 
-  // Add term codes
-  if (cls.termCodes && cls.termCodes.length > 0) {
-    const termInfo = cls.termCodes.join(", ");
-    description = description ? `${description} ${termInfo}` : termInfo;
+  // Add location/room
+  if (cls.location) {
+    description = description ? `${description} Rm ${cls.location}` : `Rm ${cls.location}`;
   }
 
   return {
     name: name,
-    section: section,
     description: description,
   };
 }
@@ -151,6 +130,9 @@ function testIACSStandardConverter() {
 
         console.log("   Full SIS Class Data:");
         console.log(JSON.stringify(enhanced, null, 2));
+
+        console.log("   Full SIS Course Data:");
+        console.log(JSON.stringify(sisClass.course, null, 2));
 
         // Test converter
         const sisData = {
