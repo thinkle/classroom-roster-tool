@@ -8,33 +8,54 @@
  * @returns {Object} Google Classroom parameters
  */
 function iacsStandardConverter(sisData) {
-  console.log('IACS Converter converting', JSON.stringify(sisData, null, 2));
   const cls = sisData.class;
-  let name = `${cls.course.courseCode}-${cls.classCode}: ${cls.title || "Untitled"}`;
+  const course = sisData.course;
 
-  // Build description: TERM CODE SHORT YEAR LOCATION
-  let description = "";
-
-  // Add term codes
-  if (cls.termCodes && cls.termCodes.length > 0) {
-    description = cls.termCodes.join(", ");
+  // Build section with periods and term info
+  let section = "";
+  if (cls.periods && cls.periods.length > 0) {
+    section = `Period ${cls.periods.join(", ")}`;
   }
 
+  // Add term info to section
+  if (cls.termCodes && cls.termCodes.length > 0) {
+    const termInfo = cls.termCodes.join(", ");
+    section = section ? `${section} - ${termInfo}` : termInfo;
+  }
+
+  // Build title: {classCode}-{section}: {title}
+  let name = cls.title || "Untitled Course";
+  if (cls.classCode) {
+    name = `${cls.classCode}-${section}: ${name}`;
+  } else {
+    name = `${section}: ${name}`;
+  }
+
+  // Build description: Rm 205, '25-'26 S2 (no newlines, clean and simple)
+  let description = "";
+  
+  // Add room if available
+  if (cls.location) {
+    description = `Rm ${cls.location}`;
+  }
+  
   // Add school year in short format
   if (cls.schoolYearTitle) {
     const shortYear = extractShortSchoolYear(cls.schoolYearTitle);
     if (shortYear) {
-      description = description ? `${description} '${shortYear}` : `'${shortYear}`;
+      description = description ? `${description}, '${shortYear}` : `'${shortYear}`;
     }
   }
 
-  // Add location/room
-  if (cls.location) {
-    description = description ? `${description} Rm ${cls.location}` : `Rm ${cls.location}`;
+  // Add term codes
+  if (cls.termCodes && cls.termCodes.length > 0) {
+    const termInfo = cls.termCodes.join(", ");
+    description = description ? `${description} ${termInfo}` : termInfo;
   }
 
   return {
     name: name,
+    section: section,
     description: description,
   };
 }
@@ -90,7 +111,7 @@ function iacsTestConverter(sisData) {
     name: name,
     section: section,
     description: description,
-    courseState: "DRAFT", // Keep test classrooms as drafts
+    courseState: "PROVISIONED", // Keep test classrooms as drafts
     guardiansEnabled: false, // Disable guardians for test classrooms
   };
 }
@@ -128,12 +149,6 @@ function testIACSStandardConverter() {
         const baseUrl = getSISUrl();
         const enhanced = enhanceClassWithAcademicData(sisClass, token, baseUrl);
 
-        console.log("   Full SIS Class Data:");
-        console.log(JSON.stringify(enhanced, null, 2));
-
-        console.log("   Full SIS Course Data:");
-        console.log(JSON.stringify(sisClass.course, null, 2));
-
         // Test converter
         const sisData = {
           class: enhanced,
@@ -147,7 +162,7 @@ function testIACSStandardConverter() {
         console.log(`   - Name: "${result.name}"`);
         console.log(`   - Section: "${result.section}"`);
         console.log(
-          `   - Description: "${result.description}"`
+          `   - Description: "${result.description.substring(0, 100)}..."`
         );
         console.log("");
       } catch (error) {
@@ -179,7 +194,7 @@ function testGetIACSClassroomParams() {
 
     // Use standard production parameters
     const params = {
-      courseState: "DRAFT", // Safe: creates in draft mode
+      courseState: "PROVISIONED", // Safe: creates in draft mode
       guardiansEnabled: false, // Safe for testing
     };
 
@@ -196,7 +211,8 @@ function testGetIACSClassroomParams() {
       if (result.success) {
         const params = result.classroomParams;
         console.log(
-          `${index + 1}. ${result.sisClass.title} (${result.sisClass.sourcedId
+          `${index + 1}. ${result.sisClass.title} (${
+            result.sisClass.sourcedId
           })`
         );
         console.log(`   Generated Parameters:`);
@@ -287,7 +303,7 @@ function createCoursesIACS(filter = {}, params = {}) {
  * WARNING: This creates actual Google Classrooms (but marked as tests)!
  * @param {number} limit - Number of test classrooms to create
  */
-function createCoursesIACSTest(limit = 3) {
+function createCoursesIACSTest(limit = 1) {
   console.log("=== Creating IACS Test Classrooms ===");
   console.log(
     "WARNING: This will create actual Google Classrooms (marked as tests)!"
@@ -307,7 +323,7 @@ function createCoursesIACSTest(limit = 3) {
 
     // Test parameters
     const params = {
-      courseState: "DRAFT", // Keep as drafts
+      courseState: "PROVISIONED", // Keep as drafts
       guardiansEnabled: false, // No guardians for tests
     };
 
@@ -461,9 +477,10 @@ function testIACSAcademicData() {
           `   - School Year: ${enhanced.schoolYearTitle || "Not found"}`
         );
         console.log(
-          `   - Short Year: ${enhanced.schoolYearTitle
-            ? extractShortSchoolYear(enhanced.schoolYearTitle)
-            : "N/A"
+          `   - Short Year: ${
+            enhanced.schoolYearTitle
+              ? extractShortSchoolYear(enhanced.schoolYearTitle)
+              : "N/A"
           }`
         );
         if (enhanced.termTitles && enhanced.termTitles.length > 0) {

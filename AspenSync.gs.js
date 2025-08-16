@@ -4,7 +4,7 @@ ARCHIVED FILE: AspenSync.gs.js (Original 3000-line monolithic implementation)
 This file has been archived for safety and reference purposes.
 The functionality has been reorganized into three focused files:
 - AspenAPI.gs: Core SIS API functions (authentication, caching, data fetching)
-- AspenClassroomConnector.gs: Main generator functions (flexible API for classroom creation)
+- AspenClassroomConnector.gs: Main generator functions (flexible API for classroom creation)  
 - AspenIACS.gs: School-specific converters and test functions
 
 This archived file is commented out to prevent function name conflicts
