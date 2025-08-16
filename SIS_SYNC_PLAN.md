@@ -9,22 +9,74 @@ Add automated sync from Aspen SIS data.
 - ✅ SIS API authentication working
 - ✅ Basic student/schedule lookup working
 - ✅ Test functions in place
+- ✅ SIS schools discovery (Innovation Academy HS & MS identified)
+- ✅ SIS terms discovery with school-specific endpoints
+- ✅ Terms ordering/filtering by school year (orderBy/sort parameters fixed)
+- ✅ Current school year terms filtering (2024-2025)
+
+## Development Notes
+
+### Test Function Organization
+
+- **AspenSync.gs.js**: Main test functions for development/debugging (easier to run in same window)
+- **Secrets.gs.js**: Only test functions that contain sensitive data (student names, etc.)
+
+### API Discovery Notes
+
+- **Terms Endpoint**: Use school-specific `/schools/{id}/terms` (global `/terms` may not work)
+- **Term Ordering**: `orderBy=desc&sort=schoolYear` to get most recent terms first
+- **Current School Year**: Filter by `schoolYear='2024-2025'` and `status='active'` for current terms only
 
 ## Phase 1: Data Discovery & Mapping
 
 ### 1.1 Explore Available SIS Data
 
-- [ ] Get list of schools (`/oneroster/v1p1/schools`)
-- [ ] Get list of terms/academic sessions (`/oneroster/v1p1/terms`)
-- [ ] Get list of courses (`/oneroster/v1p1/courses`)
-- [ ] Get list of classes (`/oneroster/v1p1/classes`)
-- [ ] Understand the data structure and relationships
+- ✅ Get list of schools (`/oneroster/v1p1/schools`)
+- ✅ Get list of terms/academic sessions (`/oneroster/v1p1/schools/{id}/terms`)
+- ✅ Get list of courses (`/oneroster/v1p1/courses`)
+- ✅ Get list of classes (`/oneroster/v1p1/classes`)
+- ✅ Understand the data structure and relationships
+- ✅ Innovation Academy specific convenience functions
 
 ### 1.2 Map SIS Data to Classroom Needs
 
-- [ ] Determine which courses/classes should become Google Classrooms
-- [ ] Map SIS class fields to Google Classroom properties
-- [ ] Identify unique identifiers for tracking sync state
+- [x] **Build Core API Functions First** (before spreadsheet infrastructure):
+
+  - [x] `gatherClassroomData(classId)` - Get all data needed for Google Classroom creation
+  - [x] `testGatherClassroomData()` - Test data gathering and mapping
+  - [x] `createSampleClassroom()` - Test actual Google Classroom creation
+  - [x] `getStudentsForClass(classId)` - Get student enrollment data
+  - [x] `addStudentsToClass(classroomId, classId)` - Add students to created classroom
+  - [x] Basic logging functions to track what's been created (prevent duplicates)
+  - [x] `testCreateSampleClassroom()` - Test complete classroom creation
+  - [x] `testGetStudentsForClass()` - Test student retrieval
+  - [x] `testCompleteClassroomWorkflow()` - End-to-end test
+  - [x] **Flexible API Design**:
+    - [x] `createCourse(aspenId, params, converter)` - Single course creation with custom converter
+    - [x] `createCourses(filter, params, converter)` - Bulk course creation with filtering
+    - [x] `getSISClassesWithFilter(filter)` - Advanced filtering (subjects, terms, custom functions)
+    - [x] `testCreateCourseWithConverter()` - Test custom converter functions
+    - [x] `testCreateCoursesWithFilter()` - Test bulk creation with filtering
+    - [x] `testCourseFiltering()` - Test filtering without creation
+  - FIXED: Teacher endpoint now uses `/classes/{classId}/teachers` (was using enrollments)
+  - FIXED: Student endpoint now uses `/classes/{classId}/students` (was using enrollments)
+
+- [ ] **Then Map Requirements**:
+  - [ ] Determine which courses/classes should become Google Classrooms
+  - [ ] Map SIS class fields to Google Classroom properties (name, section, description, room, ownerId)
+  - [ ] Design naming scheme/formulas for classroom titles
+  - [ ] Identify unique identifiers for tracking sync state
+
+### 1.3 UX Planning for Term-Based Scheduling
+
+- [ ] **Term Scheduling Spreadsheet Design**: Create UX for managing when classes are created and students added
+  - [ ] Schema: `Term | SY | id | Date to Create | Date to Add Student`
+  - [ ] Allow manual override of auto-calculated dates
+  - [ ] Term name/description for human readability
+- [ ] **Automation Logic**: Read scheduling spreadsheet to determine when to take actions
+  - [ ] Check current date against "Date to Create" to trigger class creation
+  - [ ] Check current date against "Date to Add Student" to trigger enrollment
+  - [ ] Handle different terms having different schedules
 
 ## Phase 2: Spreadsheet State Tracking
 
@@ -33,6 +85,7 @@ Add automated sync from Aspen SIS data.
 - [ ] **Classes Sheet**: SIS Class ID, Google Classroom ID, Title, Teacher, Created Date, Last Sync
 - [ ] **Students Sheet**: SIS Student ID, Student Email, Class ID, Added Date, Last Sync
 - [ ] **Sync Log Sheet**: Timestamp, Action, Details, Success/Error
+- [ ] **Term Schedule Sheet**: Term, SY, Term ID, Date to Create, Date to Add Student (for UX control)
 
 ### 2.2 Spreadsheet Helper Functions
 
@@ -42,6 +95,8 @@ Add automated sync from Aspen SIS data.
 - [ ] `getTrackedStudents(classId)` - Read student enrollments for a class
 - [ ] `logStudentAdded(studentId, classId, details)` - Record student addition
 - [ ] `logSyncAction(action, details, success)` - General logging
+- [ ] `getTermSchedule()` - Read term scheduling configuration
+- [ ] `updateTermSchedule(termId, createDate, addStudentDate)` - Update scheduling dates
 
 ## Phase 3: Class Creation from SIS
 
@@ -135,9 +190,24 @@ Add automated sync from Aspen SIS data.
 
 ## Next Steps
 
-1. Start with Phase 1.1 - exploring available SIS data
-2. Create test functions to understand the data structure
-3. Design the tracking spreadsheet schema
-4. Build the basic sync functions
+**IMMEDIATE TODO:**
+
+1. ✅ Fix orderBy/sort parameters for terms (completed)
+2. ✅ Build core API functions before spreadsheet infrastructure (COMPLETED!)
+3. ✅ Run `exploreInnovationClasses()` to see actual class data structure (ready to test)
+4. ✅ Create `gatherClassroomData()`, `createSampleClassroom()`, `getStudentsForClass()`, `addStudentsToClass()`
+5. **🚀 CURRENT FOCUS**: Test core functionality end-to-end with real data
+6. After testing works: Design spreadsheet schema for tracking
+
+**Phase 1 Completion:**
+
+1. ✅ SIS API connectivity and authentication
+2. ✅ School and term discovery
+3. Next: Complete class data exploration and mapping
+
+**UX Planning Priority:**
+
+- Design term scheduling spreadsheet for controlling when classes are created/students added
+- Plan automation logic for date-based triggers
 
 Would you like to start with exploring the available SIS data to understand what we're working with?

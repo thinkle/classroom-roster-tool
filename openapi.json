@@ -1,0 +1,4838 @@
+{
+  "openapi": "3.0.1",
+  "info": { "title": "Aspen OneRoster API", "version": "1.1" },
+  "servers": [{ "url": "/ims" }],
+  "security": [{ "Bearer": [] }],
+  "paths": {
+    "/oneroster/v1p1/academicSessions/{id}": {
+      "get": {
+        "description": "getAcademicSession",
+        "operationId": "getAcademicSession_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperAcademicSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/academicSessions": {
+      "get": {
+        "description": "getAllAcademicSessions",
+        "operationId": "getAcademicSessions_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperAcademicSessions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/categories/{id}": {
+      "get": {
+        "description": "getCategory",
+        "operationId": "getCategory_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperCategory"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/categories": {
+      "get": {
+        "description": "getAllCategories",
+        "operationId": "getCategories_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperCategories"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/classes/{classId}/teachers": {
+      "get": {
+        "description": "getTeachersForClass",
+        "operationId": "getTeachersForClass_1",
+        "parameters": [
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/classes/{classId}/students/{studentId}/results": {
+      "get": {
+        "description": "getResultsForStudentForClass",
+        "operationId": "getResultsForStudentForClass_1",
+        "parameters": [
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "studentId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/classes/{classId}/lineItems": {
+      "get": {
+        "description": "getLineItemsForClass",
+        "operationId": "getLineItemsForClass_1",
+        "parameters": [
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperLineItems"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/classes/{classId}/students": {
+      "get": {
+        "description": "getStudentsForClass",
+        "operationId": "getStudentsForClass_1",
+        "parameters": [
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/classes/{classId}/results": {
+      "get": {
+        "description": "getResultsForClass",
+        "operationId": "getResultsForClass_1",
+        "parameters": [
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperResults" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/classes/{classId}/lineItems/{lineItemId}/results": {
+      "get": {
+        "description": "getResultsForLineItemForClass",
+        "operationId": "getResultsForLineItemForClass_1",
+        "parameters": [
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "lineItemId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/classes/{id}": {
+      "get": {
+        "description": "getClass",
+        "operationId": "getClass_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperClass" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/classes": {
+      "get": {
+        "description": "getAllClasses",
+        "operationId": "getClasses_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperClasses" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/courses": {
+      "get": {
+        "description": "getAllCourses",
+        "operationId": "getCourses_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperCourses" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/courses/{id}": {
+      "get": {
+        "description": "getCourse",
+        "operationId": "getCourse_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperCourse" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/demographics/{id}": {
+      "get": {
+        "description": "getDemographics",
+        "operationId": "getDemographics_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperDemographics"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "This API is not part of the OneRoster specification and requires additional data configuration.",
+        "description": "putDemographics",
+        "operationId": "putDemographics_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DemographicsModel" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperDemographics"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperDemographics"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/demographics": {
+      "get": {
+        "description": "getAllDemographics",
+        "operationId": "getAllDemographics_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperDemographicsList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/enrollments": {
+      "get": {
+        "description": "getAllEnrollments",
+        "operationId": "getEnrollments_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperEnrollments"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/enrollments/{id}": {
+      "get": {
+        "description": "getEnrollment",
+        "operationId": "getEnrollment_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperEnrollment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/gradingPeriods": {
+      "get": {
+        "description": "getAllGradingPeriods",
+        "operationId": "getGradingPeriods_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperAcademicSessions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/gradingPeriods/{id}": {
+      "get": {
+        "description": "getGradingPeriod",
+        "operationId": "getGradingPeriod_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperAcademicSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/lineItems/{id}": {
+      "get": {
+        "description": "getLineItem",
+        "operationId": "getLineItem_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperLineItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "putLineItem",
+        "operationId": "putLineItem_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ModelWrapperLineItem" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperLineItem"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperLineItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/orgs/{id}": {
+      "get": {
+        "description": "getOrg",
+        "operationId": "getOrg_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperOrg" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/orgs": {
+      "get": {
+        "description": "getAllOrgs",
+        "operationId": "getOrgs_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperOrgs" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/results/{id}": {
+      "get": {
+        "description": "getResult",
+        "operationId": "getResult_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperResult" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "putResult",
+        "operationId": "putResult_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ModelWrapperResult" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperResult" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperResult" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "deleteResult",
+        "operationId": "deleteResult_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Success" },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools/{id}/students": {
+      "get": {
+        "description": "getStudentsForSchool",
+        "operationId": "getStudentsForSchool_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools": {
+      "get": {
+        "description": "getAllSchools",
+        "operationId": "getSchools_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperOrgs" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools/{id}": {
+      "get": {
+        "description": "getSchool",
+        "operationId": "getSchool_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperOrg" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools/{schoolId}/classes/{classId}/enrollments": {
+      "get": {
+        "description": "getEnrollmentsForSchoolAndClass",
+        "operationId": "getEnrollmentsForSchoolAndClass_1",
+        "parameters": [
+          {
+            "name": "schoolId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperEnrollments"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools/{id}/terms": {
+      "get": {
+        "description": "getTermsForSchool",
+        "operationId": "getTermsForSchool_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperAcademicSessions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools/{id}/enrollments": {
+      "get": {
+        "description": "getEnrollmentsForSchool",
+        "operationId": "getEnrollmentsForSchool_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperEnrollments"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools/{id}/courses": {
+      "get": {
+        "description": "getCoursesForSchool",
+        "operationId": "getCoursesForSchool_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperCourses" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools/{id}/classes": {
+      "get": {
+        "description": "getClassesForSchool",
+        "operationId": "getClassesForSchool_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperClasses" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools/{schoolId}/classes/{classId}/students": {
+      "get": {
+        "description": "getStudentsForClassInSchool",
+        "operationId": "getStudentsForClassInSchool_1",
+        "parameters": [
+          {
+            "name": "schoolId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/schools/{id}/teachers": {
+      "get": {
+        "description": "getTeachersForSchool",
+        "operationId": "getTeachersForSchool_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/students": {
+      "get": {
+        "description": "getAllStudents",
+        "operationId": "getStudents_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "This API is not part of the OneRoster specification and requires additional data configuration.",
+        "description": "putStudent",
+        "operationId": "putStudent_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserModel" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReferenceModel" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReferenceModel" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/students/{id}": {
+      "get": {
+        "description": "getStudent",
+        "operationId": "getStudent_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUser" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/students/{id}/classes": {
+      "get": {
+        "description": "getClassesForStudent",
+        "operationId": "getClassesForStudent_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUser" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/teachers/{id}": {
+      "get": {
+        "description": "getTeacher",
+        "operationId": "getTeacher_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUser" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/teachers": {
+      "get": {
+        "description": "getAllTeachers",
+        "operationId": "getTeachers_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/teachers/{id}/classes": {
+      "get": {
+        "description": "getClassesForTeacher",
+        "operationId": "getClassesForTeacher_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperClasses" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/terms/{id}": {
+      "get": {
+        "description": "getTerm",
+        "operationId": "getTerm_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperAcademicSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/terms": {
+      "get": {
+        "description": "getAllTerms",
+        "operationId": "getTerms_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModelWrapperAcademicSessions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/users/{id}": {
+      "get": {
+        "description": "getUser",
+        "operationId": "getUser_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUser" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oneroster/v1p1/users": {
+      "get": {
+        "description": "getAllUsers",
+        "operationId": "getUsers_1",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 100 }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          { "name": "filter", "in": "query", "schema": { "type": "string" } },
+          { "name": "fields", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total count of entities",
+                "style": "simple",
+                "schema": { "type": "int32" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModelWrapperUsers" }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusInfoSet"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AcademicSessionModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "title": { "type": "string" },
+          "startDate": { "type": "string" },
+          "endDate": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["gradingPeriod", "semester", "schoolYear", "term"]
+          },
+          "parent": { "$ref": "#/components/schemas/ReferenceModel" },
+          "children": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReferenceModel" }
+          },
+          "schoolYear": { "type": "string" }
+        }
+      },
+      "ModelWrapperAcademicSession": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "academicSession": {
+            "$ref": "#/components/schemas/AcademicSessionModel"
+          }
+        }
+      },
+      "ReferenceModel": {
+        "type": "object",
+        "properties": {
+          "href": { "type": "string" },
+          "sourcedId": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": [
+              "academicSession",
+              "category",
+              "class",
+              "course",
+              "demographics",
+              "enrollment",
+              "gradingPeriod",
+              "lineItem",
+              "org",
+              "result",
+              "school",
+              "student",
+              "teacher",
+              "term",
+              "user"
+            ]
+          }
+        }
+      },
+      "ResponseStatus": {
+        "type": "object",
+        "properties": {
+          "imsx_codeMajor": {
+            "type": "string",
+            "enum": ["success", "failure", "unsupported"]
+          },
+          "imsx_codeMinor": {
+            "type": "string",
+            "enum": [
+              "full success",
+              "unknown object",
+              "invalid data",
+              "unauthorized",
+              "invalid_sort_field",
+              "invalid_filter_field",
+              "invalid_blank_selection_field",
+              "invalid_selection_field",
+              "forbidden"
+            ]
+          },
+          "imsx_severity": {
+            "type": "string",
+            "enum": ["status", "warning", "error"]
+          },
+          "imsx_messageRefIdentifier": { "type": "string" },
+          "imsx_operationRefIdentifier": { "type": "string" },
+          "imsx_description": { "type": "string" }
+        }
+      },
+      "ResponseStatusInfoSet": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          }
+        }
+      },
+      "ModelWrapperAcademicSessions": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "academicSessions": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AcademicSessionModel" }
+          }
+        }
+      },
+      "CategoryModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "title": { "type": "string" }
+        }
+      },
+      "ModelWrapperCategory": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "category": { "$ref": "#/components/schemas/CategoryModel" }
+        }
+      },
+      "ModelWrapperCategories": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "categories": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CategoryModel" }
+          }
+        }
+      },
+      "ModelWrapperUsers": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "users": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/UserModel" }
+          }
+        }
+      },
+      "UserIdModel": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "identifier": { "type": "string" }
+        }
+      },
+      "UserModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "username": { "type": "string" },
+          "userIds": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/UserIdModel" }
+          },
+          "enabledUser": { "type": "boolean" },
+          "givenName": { "type": "string" },
+          "familyName": { "type": "string" },
+          "middleName": { "type": "string" },
+          "role": {
+            "type": "string",
+            "enum": [
+              "administrator",
+              "aide",
+              "guardian",
+              "parent",
+              "proctor",
+              "relative",
+              "student",
+              "teacher"
+            ]
+          },
+          "identifier": { "type": "string" },
+          "email": { "type": "string" },
+          "sms": { "type": "string" },
+          "phone": { "type": "string" },
+          "orgs": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReferenceModel" }
+          },
+          "agents": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReferenceModel" }
+          },
+          "grades": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "nameSuffix": { "type": "string" },
+          "birthDate": { "type": "string" }
+        }
+      },
+      "ModelWrapperResults": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "results": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResultModel" }
+          }
+        }
+      },
+      "ResultModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "lineItem": { "$ref": "#/components/schemas/ReferenceModel" },
+          "student": { "$ref": "#/components/schemas/ReferenceModel" },
+          "scoreStatus": {
+            "type": "string",
+            "enum": [
+              "exempt",
+              "fully graded",
+              "not submitted",
+              "partially graded",
+              "submitted"
+            ]
+          },
+          "score": { "type": "number" },
+          "scoreDate": { "type": "string" },
+          "comment": { "type": "string" }
+        }
+      },
+      "LineItemModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "assignDate": { "type": "string" },
+          "dueDate": { "type": "string" },
+          "category": { "$ref": "#/components/schemas/ReferenceModel" },
+          "gradingPeriod": { "$ref": "#/components/schemas/ReferenceModel" },
+          "resultValueMin": { "type": "number" },
+          "resultValueMax": { "type": "number" },
+          "class": { "$ref": "#/components/schemas/ReferenceModel" }
+        }
+      },
+      "ModelWrapperLineItems": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "lineItems": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LineItemModel" }
+          }
+        }
+      },
+      "ClassModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "title": { "type": "string" },
+          "classCode": { "type": "string" },
+          "classType": { "type": "string", "enum": ["homeroom", "scheduled"] },
+          "location": { "type": "string" },
+          "grades": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "subjects": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "course": { "$ref": "#/components/schemas/ReferenceModel" },
+          "school": { "$ref": "#/components/schemas/ReferenceModel" },
+          "terms": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReferenceModel" }
+          },
+          "subjectCodes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "periods": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "resources": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReferenceModel" }
+          }
+        }
+      },
+      "ModelWrapperClass": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "class": { "$ref": "#/components/schemas/ClassModel" }
+        }
+      },
+      "ModelWrapperClasses": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "classes": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ClassModel" }
+          }
+        }
+      },
+      "CourseModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "title": { "type": "string" },
+          "schoolYear": { "$ref": "#/components/schemas/ReferenceModel" },
+          "courseCode": { "type": "string" },
+          "grades": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "subjects": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "org": { "$ref": "#/components/schemas/ReferenceModel" },
+          "subjectCodes": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "resources": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReferenceModel" }
+          }
+        }
+      },
+      "ModelWrapperCourses": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "courses": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CourseModel" }
+          }
+        }
+      },
+      "ModelWrapperCourse": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "course": { "$ref": "#/components/schemas/CourseModel" }
+        }
+      },
+      "DemographicsModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "birthDate": { "type": "string" },
+          "sex": { "type": "string" },
+          "americanIndianOrAlaskaNative": { "type": "boolean" },
+          "asian": { "type": "boolean" },
+          "blackOrAfricanAmerican": { "type": "boolean" },
+          "nativeHawaiianOrOtherPacificIslander": { "type": "boolean" },
+          "white": { "type": "boolean" },
+          "demographicRaceTwoOrMoreRaces": { "type": "boolean" },
+          "hispanicOrLatinoEthnicity": { "type": "boolean" },
+          "countryOfBirthCode": { "type": "string" },
+          "stateOfBirthAbbreviation": { "type": "string" },
+          "cityOfBirth": { "type": "string" },
+          "publicSchoolResidenceStatus": { "type": "string" }
+        }
+      },
+      "ModelWrapperDemographics": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "demographics": { "$ref": "#/components/schemas/DemographicsModel" }
+        }
+      },
+      "ModelWrapperDemographicsList": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "demographics": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DemographicsModel" }
+          }
+        }
+      },
+      "EnrollmentModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "user": { "$ref": "#/components/schemas/ReferenceModel" },
+          "school": { "$ref": "#/components/schemas/ReferenceModel" },
+          "role": {
+            "type": "string",
+            "enum": [
+              "administrator",
+              "aide",
+              "guardian",
+              "parent",
+              "proctor",
+              "relative",
+              "student",
+              "teacher"
+            ]
+          },
+          "primary": { "type": "boolean" },
+          "beginDate": { "type": "string" },
+          "endDate": { "type": "string" },
+          "class": { "$ref": "#/components/schemas/ReferenceModel" }
+        }
+      },
+      "ModelWrapperEnrollments": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "enrollments": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/EnrollmentModel" }
+          }
+        }
+      },
+      "ModelWrapperEnrollment": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "enrollment": { "$ref": "#/components/schemas/EnrollmentModel" }
+        }
+      },
+      "ModelWrapperLineItem": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "lineItem": { "$ref": "#/components/schemas/LineItemModel" }
+        }
+      },
+      "ModelWrapperOrg": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "org": { "$ref": "#/components/schemas/OrgModel" }
+        }
+      },
+      "OrgModel": {
+        "type": "object",
+        "properties": {
+          "sourcedId": { "type": "string" },
+          "status": { "type": "string", "enum": ["active", "tobedeleted"] },
+          "dateLastModified": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "name": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": [
+              "department",
+              "school",
+              "district",
+              "local",
+              "state",
+              "national"
+            ]
+          },
+          "identifier": { "type": "string" },
+          "parent": { "$ref": "#/components/schemas/ReferenceModel" },
+          "children": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReferenceModel" }
+          }
+        }
+      },
+      "ModelWrapperOrgs": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "orgs": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OrgModel" }
+          }
+        }
+      },
+      "ModelWrapperResult": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "result": { "$ref": "#/components/schemas/ResultModel" }
+        }
+      },
+      "ModelWrapperUser": {
+        "type": "object",
+        "properties": {
+          "statusInfoSet": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ResponseStatus" }
+          },
+          "user": { "$ref": "#/components/schemas/UserModel" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": { "tokenUrl": "/oauth/rest/v2.0/auth" }
+        }
+      }
+    }
+  }
+}
