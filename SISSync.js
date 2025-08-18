@@ -3,6 +3,8 @@
 // Orchestration for preview/create/bulk flows and status
 
 function getDefaultConverter() {
+  return iacsStandardConverter;
+  // too much complexity, friends...  
   const converterName = getSyncSetting("defaultConverter", "iacsStandardConverter");
   switch (converterName) {
     case "iacsStandardConverter":
@@ -30,9 +32,9 @@ function previewClass(sisClassId, params = {}, converter = null) {
   const finalConverter = converter || getDefaultConverter();
   let termResolvedSettings = applyTermSettingsToParams(sisClass, params);
   const effectiveParams = termResolvedSettings.params;
-  const courseParams = getGoogleClassroomCreateParams(sisClass.sourcedId, effectiveParams, finalConverter);
   logOperation("SISSync", "previewClass", `paramsReady id=${sisClassId}`);
   if (termResolvedSettings.createEnabled) {
+    const courseParams = getGoogleClassroomCreateParams(sisClass.sourcedId, effectiveParams, finalConverter);
     // Write planned values into gc* columns without creating a course
     recordSISClass(sisClass, "preview", {
       gcName: courseParams.name || "",
@@ -43,7 +45,11 @@ function previewClass(sisClassId, params = {}, converter = null) {
     });
     logOperation("SISSync", "previewClass", `recorded id=${sisClassId}`);
   } else {
-    console.log('Class not enabled: ', termResolvedSettings, sisClassId);
+    return {
+      success: true,
+      skipped: true,
+      sisClassId
+    };
   }
   return { success: true, sisClassId, preview: courseParams };
 }
@@ -70,14 +76,16 @@ function createAndLogCourseIfNotAlreadyCreated(sisClassId, params = {}, converte
   if (termResolvedSettings.createEnabled) {
     recordSISClass(classroomData.sisClass, "pending");
     const finalConverter = converter || getDefaultConverter();
+    const courseParams = getGoogleClassroomCreateParams(sisClassId, termResolvedSettings.params, finalConverter);
+    const classroom = createGoogleClassroom(courseParams);
 
-    const effectiveParams = termResolvedSettings.params;
-    const classroom = createCourse(sisClassId, effectiveParams, finalConverter);
     recordSISClass(classroomData.sisClass, "created", {
       gcId: classroom.id,
-      gcCourseState: classroom.courseState,
-      gcOwnerEmail: effectiveParams.ownerId,
-      gcGuardiansEnabled: effectiveParams.guardiansEnabled
+      gcName: courseParams.name || "",
+      gcDescription: courseParams.description || courseParams.descriptionHeading || "",
+      gcOwnerEmail: courseParams.ownerId || (params && params.ownerId) || "",
+      gcCourseState: courseParams.courseState || "",
+      gcGuardiansEnabled: typeof courseParams.guardiansEnabled === "boolean" ? courseParams.guardiansEnabled : ""
     });
     return { success: true, alreadyExists: false, sisClassId, classroomId: classroom.id, classroom };
   } else {
@@ -91,10 +99,27 @@ function bulkSyncClasses(filter = {}, params = {}, converter = null) {
   const batchId = generateBatchId();
   const classes = getSISClassesWithFilter(filter);
   const results = [];
+  let changeCount = 0;
   classes.forEach(sisClass => {
     try {
-      results.push(createAndLogCourseIfNotAlreadyCreated(sisClass.sourcedId, { ...params, batchId }, converter));
+      const result = createAndLogCourseIfNotAlreadyCreated(sisClass.sourcedId, { ...params, batchId }, converter);
+      if (result.success && !result.alreadyExists && !result.skipped) {
+        console.log(`Created class for ${sisClass.sourcedId} (${sisClass.title}) with ID ${result.classroomId}`);
+        changeCount += 1;
+        if (changeCount % 20 === 0) {
+          console.log(`Processed ${changeCount} classes so far, syncing...`);
+          SpreadsheetApp.flush(); // write changes to the sheet
+        }
+      } else if (result.alreadyExists) {
+        console.log(`Skipped ${sisClass.title} (${sisClass.sourcedId}) - already exists`);
+      } else if (result.skipped) {
+        console.log(`Skipped ${sisClass.title} (${sisClass.sourcedId}) - term settings disabled`);
+      } else {
+        console.log('huh: weird result:', sisClass.title, sisClass.id, result);
+      }
+      results.push(result);
     } catch (e) {
+      console.log('Error creating class for', sisClass.sourcedId, sisClass.title, e);
       results.push({ success: false, sisClassId: sisClass.sourcedId, error: e.message });
     }
   });
