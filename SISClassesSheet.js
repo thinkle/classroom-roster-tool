@@ -2,56 +2,70 @@
 
 // SIS Classes tracking sheet and helpers
 
+let cachedSISClassesSheet = null;
+
 function SISClassesSheet() {
-  return JsonSheet({
-    sheetName: "SIS Classes",
-    headers: [
-      "sisClassId",
-      "sisTitle",
-      "sisClassCode",
-      "sisCourseCode",
-      "sisSchoolId",
-      "sisSchoolYear",
-      "sisTerms",
-      "sisTermCodes",
-      "sisLocation",
-      "sisPeriods",
-      "gcName",
-      "gcDescription",
-      "gcOwnerEmail",
-      "gcCourseState",
-      "gcGuardiansEnabled",
-      "gcId",
-      "lastSyncAttempt",
-      "syncStatus",
-      "syncError",
-      "notes",
-    ],
-    format: function (sheet) {
-      sheet.autoResizeColumns(1, 25);
-      sheet.setFrozenRows(1);
-      sheet.setFrozenColumns(1);
+  if (!cachedSISClassesSheet) {
+    cachedSISClassesSheet = JsonSheet({
+      sheetName: "SIS Classes",
+      headers: [
+        "sisClassId",
+        "sisTitle",
+        "sisClassCode",
+        "sisCourseCode",
+        "sisSchoolId",
+        "sisSchoolYear",
+        "sisTerms",
+        "sisTermCodes",
+        "sisLocation",
+        "sisPeriods",
+        "gcName",
+        "gcDescription",
+        "gcOwnerEmail",
+        "gcCourseState",
+        "gcGuardiansEnabled",
+        "gcId",
+        "lastSyncAttempt",
+        "syncStatus",
+        "syncError",
+        "notes",
+      ],
+      format: function (sheet) {
+        sheet.autoResizeColumns(1, 25);
+        sheet.setFrozenRows(1);
+        sheet.setFrozenColumns(1);
 
-      const headerRange = sheet.getRange(1, 1, 1, 25);
-      headerRange.setBackground("#34a853");
-      headerRange.setFontColor("white");
-      headerRange.setFontWeight("bold");
+        const headerRange = sheet.getRange(1, 1, 1, 25);
+        headerRange.setBackground("#34a853");
+        headerRange.setFontColor("white");
+        headerRange.setFontWeight("bold");
 
-      const dataRange = sheet.getRange(2, 18, sheet.getMaxRows() - 1, 1); // syncStatus column
-      const createdRule = SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo("created").setBackground("#d9ead3").setRanges([dataRange]).build();
-      const failedRule = SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo("failed").setBackground("#f4cccc").setRanges([dataRange]).build();
-      const pendingRule = SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo("pending").setBackground("#fff2cc").setRanges([dataRange]).build();
-      const previewRule = SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo("preview").setBackground("#cfe2f3").setRanges([dataRange]).build();
-      sheet.setConditionalFormatRules([createdRule, failedRule, pendingRule, previewRule]);
-    }
-  });
+        const dataRange = sheet.getRange(2, 18, sheet.getMaxRows() - 1, 1); // syncStatus column
+        const createdRule = SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo("created").setBackground("#d9ead3").setRanges([dataRange]).build();
+        const failedRule = SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo("failed").setBackground("#f4cccc").setRanges([dataRange]).build();
+        const pendingRule = SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo("pending").setBackground("#fff2cc").setRanges([dataRange]).build();
+        const previewRule = SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo("preview").setBackground("#cfe2f3").setRanges([dataRange]).build();
+        sheet.setConditionalFormatRules([createdRule, failedRule, pendingRule, previewRule]);
+      }
+    });
+  }
+  return cachedSISClassesSheet;
 }
 
+function clearSISClassCache() {
+  cachedSISClassesSheet = null;
+}
+
+let cachedSISClassesTable = null;
+
 function getSISClassesTable() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName("SIS Classes");
-  if (!sheet) { throw new Error("SIS Classes sheet not found"); }
-  return SHL.Table(sheet.getDataRange(), "sisClassId");
+  if (!cachedSISClassesTable) {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName("SIS Classes");
+    if (!sheet) { throw new Error("SIS Classes sheet not found"); }
+    cachedSISClassesTable = SHL.Table(sheet.getDataRange(), "sisClassId");
+  }
+  return cachedSISClassesTable;
 }
 
 function getSyncedClass(sisClassId) {
@@ -60,7 +74,7 @@ function getSyncedClass(sisClassId) {
 }
 
 function recordSISClass(sisClass, status = "pending", result = null) {
-  const classes = SISClassesSheet();
+  const classes = getSISClassesTable();
   const row = {
     sisClassId: sisClass.sourcedId,
     sisTitle: sisClass.title,
@@ -83,5 +97,5 @@ function recordSISClass(sisClass, status = "pending", result = null) {
     syncError: (result && result.error) ? result.error : "",
     notes: ""
   };
-  classes.update(row, "sisClassId"); // why is this failing?
+  classes.updateRow(row);
 }

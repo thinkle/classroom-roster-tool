@@ -1,3 +1,4 @@
+/* global logOperation, extractShortSchoolYear, fixRoom, getAllInnovationClasses, authenticateWithSIS, getSISUrl, enhanceClassWithAcademicData, getGoogleClassroomCreateParamsMultiple, createCourses, testSISSetup, getSISClassesWithFilter */
 // ===== INNOVATION ACADEMY CHARTER SCHOOL SPECIFIC CODE =====
 // School-specific converters, test functions, and customizations
 
@@ -36,12 +37,14 @@ function iacsStandardConverter(sisData) {
   description += `\nSIS Class ID: ${cls.sourcedId}`;
   description += `\nGenerated: ${new Date().toISOString()}`; */
   let description = `Room: ${cls.location}, Term: ${cls.termTitles ? cls.termTitles.join(", ") : "N/A"}`;
-  return {
+  const params = {
     name: name,
     section: "${cls.classCode}",
     description: description,
     room: fixRoom(cls.location),
   };
+  logOperation("AspenIACS", "iacsStandardConverter", `built name='${params.name}'`);
+  return params;
 }
 
 /**
@@ -91,13 +94,15 @@ function iacsTestConverter(sisData) {
   description += `\nSIS Class ID: ${cls.sourcedId}`;
   description += `\nGenerated: ${new Date().toISOString()}`;
 
-  return {
+  const params = {
     name: name,
     section: section,
     description: description,
     courseState: "PROVISIONED", // Keep test classrooms as drafts
     guardiansEnabled: false, // Disable guardians for test classrooms
   };
+  logOperation("AspenIACS", "iacsTestConverter", `built name='${params.name}'`);
+  return params;
 }
 
 // ===== TEST FUNCTIONS =====
