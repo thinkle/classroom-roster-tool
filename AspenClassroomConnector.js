@@ -280,12 +280,24 @@ function getSISClassesWithFilter(filter = {}) {
   }
 }
 
+
+let cachedClassroomData = {};
+function gatherClassroomData(classId) {
+  if (cachedClassroomData[classId]) {
+    return cachedClassroomData[classId];
+  } else {
+    const data = gatherClassroomDataFromSIS(classId);
+    cachedClassroomData[classId] = data;
+    return data;
+  }
+}
+
 /**
  * Get detailed class information from SIS with all data needed for Google Classroom creation
  * @param {string} classId - SIS class ID to gather data for
  * @returns {Object} Complete class data mapped for Google Classroom creation
  */
-function gatherClassroomData(classId) {
+function gatherClassroomDataFromSIS(classId) {
   try {
     logOperation("AspenClassroomConnector", "gatherClassroomData", `start id=${classId}`);
     const token = authenticateWithSIS();

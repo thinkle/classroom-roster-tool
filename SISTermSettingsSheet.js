@@ -40,7 +40,13 @@ function SISTermSettingsSheet() {
   });
 }
 
+let cachedSISTermSettingTable = null;
+
 function getSISTermSettingsTable() {
+  if (cachedSISTermSettingTable) {
+    return cachedSISTermSettingTable;
+  }
+
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName("SIS Term Settings");
   if (!sheet) { throw new Error("SIS Term Settings sheet not found"); }
@@ -48,6 +54,7 @@ function getSISTermSettingsTable() {
   if (!table.headers || table.headers.indexOf("termKey") === -1) {
     throw new Error("SIS Term Settings sheet not initialized with headers");
   }
+  cachedSISTermSettingTable = table;
   return table;
 }
 
@@ -126,18 +133,18 @@ function initializeTermSettings() {
 function resolveTermSettingsForClass(sisClass) {
   try {
     const table = getSISTermSettingsTable();
-    const schoolYear = sisClass.schoolYearTitle || getSyncSetting("currentSchoolYear", "");
-    const schoolId = extractSchoolId(sisClass) || "";
-    const codes = sisClass.termCodes && sisClass.termCodes.length ? sisClass.termCodes : [""];
+    const terms = sisClass.terms || [];
 
     let foundDisabled = false;
-    for (let i = 0; i < codes.length; i++) {
-      const key = codes[i].sourcedId; //buildTermKey(schoolYear, schoolId, codes[i] || "");
+    for (let i = 0; i < terms.length; i++) {
+
+      const key = terms[i].sourcedId; //buildTermKey(schoolYear, schoolId, codes[i] || "");
       const row = table.getRow(key);
       if (!row) { continue; }
-      const enabled = (row.enabled === true || row.enabled === 1 || String(row.enabled).toLowerCase() === "true");
+      const enabled = row.enabled;
       if (enabled) {
-        return {
+
+        let settings = {
           defaultCourseState: row.defaultCourseState || getSyncSetting("defaultCourseState", "PROVISIONED"),
           createCoursesAfter: row.createCoursesAfter || "",
           addStudentsAfter: row.addStudentsAfter || "",
@@ -145,19 +152,25 @@ function resolveTermSettingsForClass(sisClass) {
           guardiansEnabled: (row.guardiansEnabled === true || row.guardiansEnabled === 1 || String(row.guardiansEnabled).toLowerCase() === "true"),
           enabled: true
         };
+        logOperation('SISTermSettingsSheet', 'resolveTermSettingsForClass', `Term ${key} is enabled: ${JSON.stringify(settings, null, 2)}`);
+        return settings;
       } else {
+        logOperation('SISTermSettingsSheet', 'resolveTermSettingsForClass', `Term ${key} is disabled`);
         foundDisabled = true;
+
       }
     }
     if (foundDisabled) {
-      return {
-        defaultCourseState: getSyncSetting("defaultCourseState", "PROVISIONED"),
+      const settings = {
+        //  defaultCourseState: getSyncSetting("defaultCourseState", "PROVISIONED"),
         createCoursesAfter: "",
         addStudentsAfter: "",
         autoAddStudents: getSyncSetting("autoAddStudents", "false") === "true",
         guardiansEnabled: true,
         enabled: false
       };
+      logOperation('SISTermSettingsSheet', 'resolveTermSettingsForClass', `Term ${terms[0].sourcedId} is disabled: ${JSON.stringify(settings, null, 2)}`);
+      return settings;
     }
   } catch (e) {
     console.warn(`[Term Settings] Resolve failed, using globals: ${e && e.message}`);
@@ -183,8 +196,12 @@ function isAfterDate(dateStr) {
 function applyTermSettingsToParams(sisClass, params = {}) {
   const ts = resolveTermSettingsForClass(sisClass);
   return {
-    ...params,
-    courseState: params.courseState || ts.defaultCourseState,
-    guardiansEnabled: (typeof params.guardiansEnabled === "boolean") ? params.guardiansEnabled : ts.guardiansEnabled
+    createEnabled: ts.enabled && isAfterDate(ts.createCoursesAfter),
+    studentsEnabled: ts.enabled && ts.autoAddStudents && isAfterDate(ts.addStudentsAfter),
+    params: {
+      ...params,
+      courseState: params.courseState || ts.defaultCourseState,
+      guardiansEnabled: (typeof params.guardiansEnabled === "boolean") ? params.guardiansEnabled : ts.guardiansEnabled
+    }
   };
 }

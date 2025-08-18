@@ -28,20 +28,23 @@ function previewClass(sisClassId, params = {}, converter = null) {
   const { sisClass } = gatherClassroomData(sisClassId);
   logOperation("SISSync", "previewClass", `gathered id=${sisClassId}`);
   const finalConverter = converter || getDefaultConverter();
-  const effectiveParams = applyTermSettingsToParams(sisClass, params);
+  let termResolvedSettings = applyTermSettingsToParams(sisClass, params);
+  const effectiveParams = termResolvedSettings.params;
   const courseParams = getGoogleClassroomCreateParams(sisClass.sourcedId, effectiveParams, finalConverter);
   logOperation("SISSync", "previewClass", `paramsReady id=${sisClassId}`);
-
-  // Write planned values into gc* columns without creating a course
-  recordSISClass(sisClass, "preview", {
-    gcName: courseParams.name || "",
-    gcDescription: courseParams.description || courseParams.descriptionHeading || "",
-    gcOwnerEmail: courseParams.ownerId || (params && params.ownerId) || "",
-    gcCourseState: courseParams.courseState || "",
-    gcGuardiansEnabled: typeof courseParams.guardiansEnabled === "boolean" ? courseParams.guardiansEnabled : ""
-  });
-  logOperation("SISSync", "previewClass", `recorded id=${sisClassId}`);
-
+  if (termResolvedSettings.createEnabled) {
+    // Write planned values into gc* columns without creating a course
+    recordSISClass(sisClass, "preview", {
+      gcName: courseParams.name || "",
+      gcDescription: courseParams.description || courseParams.descriptionHeading || "",
+      gcOwnerEmail: courseParams.ownerId || (params && params.ownerId) || "",
+      gcCourseState: courseParams.courseState || "",
+      gcGuardiansEnabled: typeof courseParams.guardiansEnabled === "boolean" ? courseParams.guardiansEnabled : ""
+    });
+    logOperation("SISSync", "previewClass", `recorded id=${sisClassId}`);
+  } else {
+    console.log('Class not enabled: ', termResolvedSettings, sisClassId);
+  }
   return { success: true, sisClassId, preview: courseParams };
 }
 
@@ -62,25 +65,26 @@ function createAndLogCourseIfNotAlreadyCreated(sisClassId, params = {}, converte
   }
 
   const classroomData = gatherClassroomData(sisClassId);
-  const termSettings = resolveTermSettingsForClass(classroomData.sisClass);
-  if (!termSettings.enabled || !isAfterDate(termSettings.createCoursesAfter)) {
-    recordSISClass(classroomData.sisClass, "skipped");
-    return { success: true, skipped: true, sisClassId, message: "Skipped by term settings" };
+  const termResolvedSettings = applyTermSettingsToParams(classroomData.sisClass, params);
+
+  if (termResolvedSettings.createEnabled) {
+    recordSISClass(classroomData.sisClass, "pending");
+    const finalConverter = converter || getDefaultConverter();
+
+    const effectiveParams = termResolvedSettings.params;
+    const classroom = createCourse(sisClassId, effectiveParams, finalConverter);
+    recordSISClass(classroomData.sisClass, "created", {
+      gcId: classroom.id,
+      gcCourseState: classroom.courseState,
+      gcOwnerEmail: effectiveParams.ownerId,
+      gcGuardiansEnabled: effectiveParams.guardiansEnabled
+    });
+    return { success: true, alreadyExists: false, sisClassId, classroomId: classroom.id, classroom };
+  } else {
+    return {
+      success: true, skipped: true, sisClassId, message: "Skipped by term settings"
+    };
   }
-
-  recordSISClass(classroomData.sisClass, "pending");
-  const finalConverter = converter || getDefaultConverter();
-  const effectiveParams = applyTermSettingsToParams(classroomData.sisClass, params);
-  const classroom = createCourse(sisClassId, effectiveParams, finalConverter);
-
-  recordSISClass(classroomData.sisClass, "created", {
-    gcId: classroom.id,
-    gcCourseState: classroom.courseState,
-    gcOwnerEmail: effectiveParams.ownerId,
-    gcGuardiansEnabled: effectiveParams.guardiansEnabled
-  });
-
-  return { success: true, alreadyExists: false, sisClassId, classroomId: classroom.id, classroom };
 }
 
 function bulkSyncClasses(filter = {}, params = {}, converter = null) {
