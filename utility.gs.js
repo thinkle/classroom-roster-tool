@@ -23,8 +23,11 @@ function zeroPad(num, len) {
   return s;
 }
 
+const doTimeLogging = false; // switch to turn on verbose logging to troubleshoot/optimize
+
 // Lightweight timestamped operation logger for debugging performance/breadcrumbs
 function logOperation(filename, callname, desc) {
+  if (!doTimeLogging) { return; }
   try {
     var now = new Date();
     var time = zeroPad(now.getHours(), 2) + ':' + zeroPad(now.getMinutes(), 2) + ':' + zeroPad(now.getSeconds(), 2) + '.' + zeroPad(now.getMilliseconds(), 3);
