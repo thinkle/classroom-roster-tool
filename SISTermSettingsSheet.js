@@ -51,9 +51,7 @@ function getSISTermSettingsTable() {
   return table;
 }
 
-function buildTermKey(schoolYear, schoolId, termCode) {
-  return `${schoolYear}:${schoolId}:${termCode}`;
-}
+
 
 function initializeTermSettings() {
   const sheet = SISTermSettingsSheet();
@@ -96,7 +94,7 @@ function initializeTermSettings() {
         const schoolYear = t.schoolYear || currentYear || `${t.startDate}-${t.endDate}`;
         const termCode = t.termCode || "";
         const termTitle = t.title || "";
-        const termKey = buildTermKey(schoolYear, schoolId, termCode);
+        const termKey = t.sourcedId;
         if (!termTable.hasRow(termKey)) {
           termTable.updateRow({
             enabled: defaults.enabled,
@@ -134,7 +132,7 @@ function resolveTermSettingsForClass(sisClass) {
 
     let foundDisabled = false;
     for (let i = 0; i < codes.length; i++) {
-      const key = buildTermKey(schoolYear, schoolId, codes[i] || "");
+      const key = codes[i].sourcedId; //buildTermKey(schoolYear, schoolId, codes[i] || "");
       const row = table.getRow(key);
       if (!row) { continue; }
       const enabled = (row.enabled === true || row.enabled === 1 || String(row.enabled).toLowerCase() === "true");

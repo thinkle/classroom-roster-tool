@@ -12,7 +12,7 @@ function iacsStandardConverter(sisData) {
   const course = sisData.course;
 
   // Build test name with clear prefix
-  let name = `${course.courseCode}-${cls.classCode || ""}: ${cls.title || "Untitled"}`;
+  let name = `${course.courseCode || "Untitled"}-${cls.classCode || ""}: ${cls.title || "Untitled"}`;
 
   // Add school year
   if (cls.schoolYearTitle) {
@@ -35,7 +35,7 @@ function iacsStandardConverter(sisData) {
   }
   description += `\nSIS Class ID: ${cls.sourcedId}`;
   description += `\nGenerated: ${new Date().toISOString()}`; */
-  let description = `Room: ${cls.location}`
+  let description = `Room: ${cls.location}, Term: ${cls.termTitles ? cls.termTitles.join(", ") : "N/A"}`;
   return {
     name: name,
     section: "${cls.classCode}",
