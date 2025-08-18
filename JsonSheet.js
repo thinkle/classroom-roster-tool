@@ -15,7 +15,16 @@ function JsonSheet({ headers, sheetName, fetch = undefined, format = undefined }
             return this;
         },
         read() {
-            return SHL.Table(sheet.getDataRange())
+            let data = sheet.getDataRange().getValues();
+            if (!data || data.length === 0) { return []; }
+            const hdrs = data[0];
+            return data.slice(1).map(row => {
+                const obj = {};
+                for (let i = 0; i < hdrs.length; i++) {
+                    obj[hdrs[i]] = row[i];
+                }
+                return obj;
+            });
         },
         format() {
             if (format) { format(sheet, ss); }
