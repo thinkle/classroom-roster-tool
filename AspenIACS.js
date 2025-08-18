@@ -11,52 +11,36 @@ function iacsStandardConverter(sisData) {
   const cls = sisData.class;
   const course = sisData.course;
 
-  // Build section with periods and term info
-  let section = "";
-  if (cls.periods && cls.periods.length > 0) {
-    section = `Period ${cls.periods.join(", ")}`;
-  }
+  // Build test name with clear prefix
+  let name = `${course.courseCode}-${cls.classCode || ""}: ${cls.title || "Untitled"}`;
 
-  // Add term info to section
-  if (cls.termCodes && cls.termCodes.length > 0) {
-    const termInfo = cls.termCodes.join(", ");
-    section = section ? `${section} - ${termInfo}` : termInfo;
-  }
-
-  // Build title: {classCode}-{section}: {title}
-  let name = cls.title || "Untitled Course";
-  if (cls.classCode) {
-    name = `${cls.classCode}-${section}: ${name}`;
-  } else {
-    name = `${section}: ${name}`;
-  }
-
-  // Build description: Rm 205, '25-'26 S2 (no newlines, clean and simple)
-  let description = "";
-  
-  // Add room if available
-  if (cls.location) {
-    description = `Rm ${cls.location}`;
-  }
-  
-  // Add school year in short format
+  // Add school year
   if (cls.schoolYearTitle) {
     const shortYear = extractShortSchoolYear(cls.schoolYearTitle);
     if (shortYear) {
-      description = description ? `${description}, '${shortYear}` : `'${shortYear}`;
+      name += ` (${shortYear})`;
     }
   }
 
-  // Add term codes
-  if (cls.termCodes && cls.termCodes.length > 0) {
-    const termInfo = cls.termCodes.join(", ");
-    description = description ? `${description} ${termInfo}` : termInfo;
+  /* // Test description with debugging info
+  let description = `TEST CLASSROOM - ${cls.title}`;
+  if (course && course.courseCode) {
+    description += `\nCourse Code: ${course.courseCode}`;
   }
-
+  if (cls.schoolYearTitle) {
+    description += `\nSchool Year: ${cls.schoolYearTitle}`;
+  }
+  if (cls.termTitles && cls.termTitles.length > 0) {
+    description += `\nTerms: ${cls.termTitles.join(", ")}`;
+  }
+  description += `\nSIS Class ID: ${cls.sourcedId}`;
+  description += `\nGenerated: ${new Date().toISOString()}`; */
+  let description = `Room: ${cls.location}`
   return {
     name: name,
-    section: section,
+    section: "${cls.classCode}",
     description: description,
+    room: fixRoom(cls.location),
   };
 }
 
@@ -211,8 +195,7 @@ function testGetIACSClassroomParams() {
       if (result.success) {
         const params = result.classroomParams;
         console.log(
-          `${index + 1}. ${result.sisClass.title} (${
-            result.sisClass.sourcedId
+          `${index + 1}. ${result.sisClass.title} (${result.sisClass.sourcedId
           })`
         );
         console.log(`   Generated Parameters:`);
@@ -477,10 +460,9 @@ function testIACSAcademicData() {
           `   - School Year: ${enhanced.schoolYearTitle || "Not found"}`
         );
         console.log(
-          `   - Short Year: ${
-            enhanced.schoolYearTitle
-              ? extractShortSchoolYear(enhanced.schoolYearTitle)
-              : "N/A"
+          `   - Short Year: ${enhanced.schoolYearTitle
+            ? extractShortSchoolYear(enhanced.schoolYearTitle)
+            : "N/A"
           }`
         );
         if (enhanced.termTitles && enhanced.termTitles.length > 0) {
