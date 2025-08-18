@@ -1,4 +1,4 @@
-/* global SpreadsheetApp, HtmlService, getSISSchools, getSyncSetting, setSyncSetting, getDefaultConverter, initializeSISSyncSystem, initializeTermSettings, stageTermSettingsAndPreview, previewClasses, bulkSyncClasses, getSISClassesWithFilter, getSISClassesTable, resolveTermSettingsForClass, isAfterDate, addStudentsToClass, logSyncOperation */
+/* global SpreadsheetApp, HtmlService, getSISSchools, getSyncSetting, setSyncSetting, getDefaultConverter, initializeSISSyncSystem, initializeTermSettings, stageTermSettingsAndPreview, previewClasses, bulkSyncClasses, getSISClassesWithFilter, getSISClassesTable, resolveTermSettingsForClass, isAfterDate, addStudentsToClass, logSyncOperation, logOperation */
 
 // Spreadsheet menu wiring and no-arg handlers for IACS flows
 
@@ -21,7 +21,10 @@ function setupTermMenus(ui) {
 
 function previewSISSyncCourseData() {
   // Seeds terms from SIS and writes preview values only
-  return stageTermSettingsAndPreview();
+  logOperation("SISMenu", "previewSISSyncCourseData", "start");
+  const res = stageTermSettingsAndPreview();
+  logOperation("SISMenu", "previewSISSyncCourseData", "done");
+  return res;
 }
 
 function createSISSyncClasses() {

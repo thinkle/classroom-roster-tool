@@ -1,9 +1,10 @@
+/* global logOperation, authenticateWithSIS, getSISUrl, enhanceClassWithAcademicData, getSISClassesForSchool, getAllInnovationClasses, UrlFetchApp, Classroom */
 // ===== ASPEN TO GOOGLE CLASSROOM CONNECTOR =====
 // Main API for creating Google Classrooms from SIS data with flexible converters
 
 /**
  * Get Google Classroom creation parameters for a single SIS class
- * @param {string} aspenId - SIS class ID
+ * @param {string|Object} aspenId - SIS class ID or pre-fetched classroomData from gatherClassroomData
  * @param {Object} params - Additional parameters for classroom creation
  * @param {Function} converter - Optional converter function: (sisData) => googleParamsPartial
  * @returns {Object} Google Classroom creation parameters
@@ -26,6 +27,11 @@ function getGoogleClassroomCreateParams(
         teacher: classroomData.sisTeacher,
       };
       convertedData = converter(sisData) || {};
+      logOperation(
+        "AspenClassroomConnector",
+        "getGoogleClassroomCreateParams",
+        "converted params"
+      );
     }
 
     // Merge data: base mapping < converter results < explicit params
@@ -34,6 +40,11 @@ function getGoogleClassroomCreateParams(
       ...convertedData,
       ...params,
     };
+    logOperation(
+      "AspenClassroomConnector",
+      "getGoogleClassroomCreateParams",
+      "merged id=" + aspenId
+    );
 
     return finalClassroomData;
   } catch (error) {
@@ -54,12 +65,15 @@ function getGoogleClassroomCreateParamsMultiple(
   converter = null
 ) {
   try {
+    logOperation("AspenClassroomConnector", "getGoogleClassroomCreateParamsMultiple", "start");
     // Get SIS classes based on filter
     const classes = getSISClassesWithFilter(filter);
+    logOperation("AspenClassroomConnector", "getGoogleClassroomCreateParamsMultiple", `classes=${classes.length}`);
     const results = [];
 
     for (const sisClass of classes) {
       try {
+        logOperation("AspenClassroomConnector", "getGoogleClassroomCreateParamsMultiple", `single start id=${sisClass.sourcedId}`);
         const classroomParams = getGoogleClassroomCreateParams(
           sisClass.sourcedId,
           params,
@@ -71,6 +85,7 @@ function getGoogleClassroomCreateParamsMultiple(
           sisClass: sisClass,
           classroomParams: classroomParams,
         });
+        logOperation("AspenClassroomConnector", "getGoogleClassroomCreateParamsMultiple", `single done id=${sisClass.sourcedId}`);
       } catch (error) {
         results.push({
           success: false,
@@ -96,6 +111,7 @@ function getGoogleClassroomCreateParamsMultiple(
  */
 function createCourse(aspenId, params = {}, converter = null) {
   try {
+    logOperation("AspenClassroomConnector", "createCourse", `start id=${aspenId}`);
     // Get the classroom creation parameters
     const classroomParams = getGoogleClassroomCreateParams(
       aspenId,
@@ -105,6 +121,7 @@ function createCourse(aspenId, params = {}, converter = null) {
 
     // Create the classroom
     const classroom = createGoogleClassroom(classroomParams);
+    logOperation("AspenClassroomConnector", "createCourse", `created id=${aspenId}`);
 
     return classroom;
   } catch (error) {
@@ -121,6 +138,7 @@ function createCourse(aspenId, params = {}, converter = null) {
  */
 function createCourses(filter = {}, params = {}, converter = null) {
   try {
+    logOperation("AspenClassroomConnector", "createCourses", "start");
     // Get all the classroom creation parameters first
     const classroomParamsArray = getGoogleClassroomCreateParamsMultiple(
       filter,
@@ -154,6 +172,7 @@ function createCourses(filter = {}, params = {}, converter = null) {
       }
     }
 
+    logOperation("AspenClassroomConnector", "createCourses", `done count=${results.length}`);
     return results;
   } catch (error) {
     throw error;
@@ -167,6 +186,7 @@ function createCourses(filter = {}, params = {}, converter = null) {
  */
 function getSISClassesWithFilter(filter = {}) {
   try {
+    logOperation("AspenClassroomConnector", "getSISClassesWithFilter", "start");
     let allClasses = [];
 
     // If filter specifies schools, get classes for those schools
@@ -178,6 +198,7 @@ function getSISClassesWithFilter(filter = {}) {
         );
         allClasses = allClasses.concat(schoolClasses.classes || []);
       }
+      logOperation("AspenClassroomConnector", "getSISClassesWithFilter", `schools fetched=${(filter.schools || []).length}, count=${allClasses.length}`);
     } else {
       // Default to Innovation Academy schools
       const innovationClasses = getAllInnovationClasses(filter.limit || 100);
@@ -185,6 +206,7 @@ function getSISClassesWithFilter(filter = {}) {
         ...innovationClasses.highSchool.classes,
         ...innovationClasses.middleSchool.classes,
       ];
+      logOperation("AspenClassroomConnector", "getSISClassesWithFilter", `innovation fetched count=${allClasses.length}`);
     }
 
     // Apply built-in filters
@@ -205,6 +227,7 @@ function getSISClassesWithFilter(filter = {}) {
         }
         return false;
       });
+      logOperation("AspenClassroomConnector", "getSISClassesWithFilter", `filter schoolYear -> ${filteredClasses.length}`);
     }
 
     // Filter by term
@@ -217,6 +240,7 @@ function getSISClassesWithFilter(filter = {}) {
         }
         return false;
       });
+      logOperation("AspenClassroomConnector", "getSISClassesWithFilter", `filter term -> ${filteredClasses.length}`);
     }
 
     // Filter by subject
@@ -234,18 +258,22 @@ function getSISClassesWithFilter(filter = {}) {
         }
         return false;
       });
+      logOperation("AspenClassroomConnector", "getSISClassesWithFilter", `filter subjects -> ${filteredClasses.length}`);
     }
 
     // Apply custom filter function if provided
     if (typeof filter === "function") {
       filteredClasses = allClasses.filter(filter);
+      logOperation("AspenClassroomConnector", "getSISClassesWithFilter", `custom fn -> ${filteredClasses.length}`);
     } else if (
       filter.customFilter &&
       typeof filter.customFilter === "function"
     ) {
       filteredClasses = filteredClasses.filter(filter.customFilter);
+      logOperation("AspenClassroomConnector", "getSISClassesWithFilter", `custom prop -> ${filteredClasses.length}`);
     }
 
+    logOperation("AspenClassroomConnector", "getSISClassesWithFilter", `done count=${filteredClasses.length}`);
     return filteredClasses;
   } catch (error) {
     throw error;
@@ -259,6 +287,7 @@ function getSISClassesWithFilter(filter = {}) {
  */
 function gatherClassroomData(classId) {
   try {
+    logOperation("AspenClassroomConnector", "gatherClassroomData", `start id=${classId}`);
     const token = authenticateWithSIS();
     const baseUrl = getSISUrl();
     const cleanBaseUrl = baseUrl.replace(/\/+$/, "");
@@ -280,6 +309,7 @@ function gatherClassroomData(classId) {
 
     const classData = JSON.parse(classResponse.getContentText());
     const sisClass = classData.class || classData;
+    logOperation("AspenClassroomConnector", "gatherClassroomData", `class ok id=${classId}`);
 
     // Get course details if available
     let courseData = null;
@@ -301,6 +331,7 @@ function gatherClassroomData(classId) {
           // Attach course data to class for enhancement
           sisClass.course = courseData;
         }
+        logOperation("AspenClassroomConnector", "gatherClassroomData", `course ok id=${classId}`);
       } catch (error) {
         // Course fetch failed - continue without course data
       }
@@ -312,6 +343,7 @@ function gatherClassroomData(classId) {
       token,
       baseUrl
     );
+    logOperation("AspenClassroomConnector", "gatherClassroomData", `enhanced id=${classId}`);
 
     // Get teacher information
     let teacherData = null;
@@ -341,6 +373,7 @@ function gatherClassroomData(classId) {
           teacherData = teachers[0];
         }
       }
+      logOperation("AspenClassroomConnector", "gatherClassroomData", `teacher ok id=${classId}`);
     } catch (error) {
       // Teacher fetch failed - continue without teacher data
     }
@@ -356,6 +389,7 @@ function gatherClassroomData(classId) {
     classroomData.sisClass = enhancedClass;
     classroomData.sisCourse = courseData;
     classroomData.sisTeacher = teacherData;
+    logOperation("AspenClassroomConnector", "gatherClassroomData", `mapped id=${classId}`);
 
     return classroomData;
   } catch (error) {

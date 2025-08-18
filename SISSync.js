@@ -1,4 +1,4 @@
-/* global getSyncSetting, initializeTermSettings, resolveTermSettingsForClass, isAfterDate, applyTermSettingsToParams, getSISClassesWithFilter, getGoogleClassroomCreateParams, gatherClassroomData, createCourse, iacsStandardConverter, iacsTestConverter, SISClassesSheet, SISTermSettingsSheet, SyncHistorySheet, StudentEnrollmentsSheet, SISSyncSettingsSheet, initializeSyncSettings, getSyncedClass, recordSISClass */
+/* global getSyncSetting, initializeTermSettings, resolveTermSettingsForClass, isAfterDate, applyTermSettingsToParams, getSISClassesWithFilter, getGoogleClassroomCreateParams, gatherClassroomData, createCourse, iacsStandardConverter, iacsTestConverter, SISClassesSheet, SISTermSettingsSheet, SyncHistorySheet, StudentEnrollmentsSheet, SISSyncSettingsSheet, initializeSyncSettings, getSyncedClass, recordSISClass, logOperation */
 
 // Orchestration for preview/create/bulk flows and status
 
@@ -24,10 +24,13 @@ function generateBatchId() {
 }
 
 function previewClass(sisClassId, params = {}, converter = null) {
+  logOperation("SISSync", "previewClass", `start id=${sisClassId}`);
   const { sisClass } = gatherClassroomData(sisClassId);
+  logOperation("SISSync", "previewClass", `gathered id=${sisClassId}`);
   const finalConverter = converter || getDefaultConverter();
   const effectiveParams = applyTermSettingsToParams(sisClass, params);
   const courseParams = getGoogleClassroomCreateParams(sisClass.sourcedId, effectiveParams, finalConverter);
+  logOperation("SISSync", "previewClass", `paramsReady id=${sisClassId}`);
 
   // Write planned values into gc* columns without creating a course
   recordSISClass(sisClass, "preview", {
@@ -37,14 +40,19 @@ function previewClass(sisClassId, params = {}, converter = null) {
     gcCourseState: courseParams.courseState || "",
     gcGuardiansEnabled: typeof courseParams.guardiansEnabled === "boolean" ? courseParams.guardiansEnabled : ""
   });
+  logOperation("SISSync", "previewClass", `recorded id=${sisClassId}`);
 
   return { success: true, sisClassId, preview: courseParams };
 }
 
 function previewClasses(filter = {}, params = {}, converter = null) {
+  logOperation("SISSync", "previewClasses", "start");
   const batchId = generateBatchId();
   const classes = getSISClassesWithFilter(filter);
-  return classes.map(c => previewClass(c.sourcedId, { ...params, batchId }, converter));
+  logOperation("SISSync", "previewClasses", `fetched classes=${classes.length}`);
+  const results = classes.map(c => previewClass(c.sourcedId, { ...params, batchId }, converter));
+  logOperation("SISSync", "previewClasses", `done results=${results.length}`);
+  return results;
 }
 
 function createAndLogCourseIfNotAlreadyCreated(sisClassId, params = {}, converter = null) {
@@ -90,9 +98,13 @@ function bulkSyncClasses(filter = {}, params = {}, converter = null) {
 }
 
 function stageTermSettingsAndPreview() {
+  logOperation("SISSync", "stageTermSettingsAndPreview", "initTermSettings");
   initializeTermSettings();
   const filter = { schools: getSyncSetting("enabledSchools", "").split(",").filter(Boolean) };
-  return previewClasses(filter, {}, getDefaultConverter());
+  logOperation("SISSync", "stageTermSettingsAndPreview", `filter schools=${(filter.schools || []).length}`);
+  const res = previewClasses(filter, {}, getDefaultConverter());
+  logOperation("SISSync", "stageTermSettingsAndPreview", `done previews=${res.length}`);
+  return res;
 }
 
 function initializeSISSyncSystem() {
