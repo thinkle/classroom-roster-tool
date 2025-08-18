@@ -39,7 +39,7 @@ function iacsStandardConverter(sisData) {
   let description = `Room: ${cls.location}, Term: ${cls.termTitles ? cls.termTitles.join(", ") : "N/A"}`;
   const params = {
     name: name,
-    section: "${cls.classCode}",
+    section: `${cls.classCode}`,
     description: description,
     room: fixRoom(cls.location),
   };
