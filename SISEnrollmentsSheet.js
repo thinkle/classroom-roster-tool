@@ -28,7 +28,12 @@ function StudentEnrollmentsSheet() {
   });
 }
 
+let cachedEnrollmentsTable = null;
+
 function getStudentEnrollmentsTable() {
+  if (cachedEnrollmentsTable) {
+    return cachedEnrollmentsTable;
+  }
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName("Student Enrollments");
   if (!sheet) { throw new Error("Student Enrollments sheet not found"); }
@@ -36,6 +41,7 @@ function getStudentEnrollmentsTable() {
   if (!table.headers || table.headers.indexOf("enrollmentKey") === -1) {
     throw new Error("Student Enrollments sheet not initialized with headers");
   }
+  cachedEnrollmentsTable = table;
   return table;
 }
 
@@ -63,4 +69,76 @@ function recordStudentEnrollment(entry, status, error = "", batchId = "") {
     error: error || "",
     batchId: (existing && existing.batchId) ? existing.batchId : (batchId || "")
   });
+}
+
+
+/**
+ * Add students to an existing Google Classroom
+ * @param {string} classroomId - Google Classroom ID
+ * @param {string} sisClassId - SIS class ID to get students from
+ * @returns {Object} Results of student additions
+ */
+function addStudentsToClass(classroomId, sisClassId, log = true) {
+  let sisEnrollmentSheet = log && getStudentEnrollmentsTable();
+  try {
+    const students = getStudentsForClass(sisClassId);
+    const results = {
+      total: students.length,
+      added: 0,
+      errors: [],
+    };
+
+    for (const student of students) {
+      let err;
+      if (log) {
+        let row = sisEnrollmentSheet.getRow(`${student.email}+${classroomId}`);
+        if (row && row.enrollmentStatus === "added") {
+          // Already added, skip          
+          results.added++;
+          console.log('Skipping already added student');
+          continue;
+        }
+      }
+      try {
+        Classroom.Courses.Students.create(
+          {
+            userId: student.email,
+          },
+          classroomId
+        );
+
+        results.added++;
+      } catch (error) {
+        err = error;
+        results.errors.push({
+          email: student.email,
+          error: error.message,
+        });
+      }
+      if (log) {
+        let enrollmentStatus = "added";
+        if (err) {
+          enrollmentStatus = "error";
+          if (err.message.includes("already exists")) {
+            enrollmentStatus = "added";
+          }
+        }
+        console.log('Logging enrollment', student.email, enrollmentStatus, err ? err.message : '');
+        sisEnrollmentSheet.updateRow({
+          enrollmentKey: `${student.email}+${classroomId}`,
+          classroomId,
+          studentEmail: student.email,
+          studentName: student.name || "",
+          sisStudentId: student.sisId || "",
+          enrollmentDate: new Date().toISOString(),
+          enrollmentStatus,
+          error: err ? err.message : "",
+        });
+      }
+    }
+
+    return results;
+  } catch (error) {
+    throw error;
+  }
 }

@@ -33,12 +33,25 @@ function createSISSyncClasses() {
   return bulkSyncClasses(filter, params, getDefaultConverter());
 }
 
+function testAddSISSyncStudents() {
+  let theClass = 'MST000000nV9H9';
+  let classes = getSISClassesTable();
+  for (let row of classes) {
+    if (row.sisClassId === theClass) {
+      let res = addStudentsToClass(row.gcId, row.sisClassId);
+      console.log(JSON.stringify(res, null, 2));
+    }
+  }
+}
+
 function addSISSyncStudents() {
   const filter = { schools: getSyncSetting("enabledSchools", "").split(",").filter(Boolean) };
   const classes = getSISClassesWithFilter(filter);
   const batchId = `students_${new Date().getTime()}`;
   let total = 0, added = 0, skipped = 0, failures = 0;
   const classTable = getSISClassesTable();
+
+  const enrollmentTable = getStudentEnrollmentsTable();
 
   classes.forEach(cls => {
     try {
@@ -54,6 +67,8 @@ function addSISSyncStudents() {
       }
 
       const res = addStudentsToClass(row.gcId, cls.sourcedId);
+
+
       total += res.total || 0;
       added += res.added || 0;
       if (res.errors && res.errors.length) { failures += res.errors.length; }
