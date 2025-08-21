@@ -45,33 +45,6 @@ function getStudentEnrollmentsTable() {
   return table;
 }
 
-function computeEnrollmentKey(sisClassId, sisStudentId, studentEmail) {
-  const idPart = sisStudentId && String(sisStudentId).trim();
-  const emailPart = studentEmail && String(studentEmail).trim().toLowerCase();
-  return `${sisClassId}:${idPart || emailPart || "unknown"}`;
-}
-
-function recordStudentEnrollment(entry, status, error = "", batchId = "") {
-  const table = getStudentEnrollmentsTable();
-  const key = computeEnrollmentKey(entry.sisClassId, entry.sisStudentId, entry.studentEmail);
-  const existing = table.getRow(key);
-  const enrollmentDate = (existing && existing.enrollmentStatus === "added") ? (existing.enrollmentDate || new Date().toISOString()) : (status === "added" ? new Date().toISOString() : "");
-
-  table.updateRow({
-    enrollmentKey: key,
-    classroomId: entry.classroomId || "",
-    studentEmail: entry.studentEmail || "",
-    studentName: entry.studentName || "",
-    sisStudentId: entry.sisStudentId || "",
-    enrollmentDate,
-    enrollmentStatus: status,
-    sisClassId: entry.sisClassId || "",
-    error: error || "",
-    batchId: (existing && existing.batchId) ? existing.batchId : (batchId || "")
-  });
-}
-
-
 /**
  * Add students to an existing Google Classroom
  * @param {string} classroomId - Google Classroom ID
