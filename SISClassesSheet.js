@@ -29,6 +29,8 @@ function SISClassesSheet() {
         "syncStatus",
         "syncError",
         "notes",
+        "lastAddedStudents",
+        "lastAddedTeachers",
       ],
       format: function (sheet) {
         sheet.autoResizeColumns(1, 25);

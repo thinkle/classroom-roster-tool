@@ -1,4 +1,4 @@
-/* global SpreadsheetApp, JsonSheet, SHL */
+/* global SpreadsheetApp, JsonSheet, SHL, getSISClassesTable */
 
 // Student Enrollments sheet and helpers
 
@@ -100,6 +100,7 @@ function addStudentsToClass(classroomId, sisClassId, log = true) {
         }
       }
       try {
+        logOperation('SISEnrollmentSheet', 'Classroom.Courses.Students.create', 'adding student');
         Classroom.Courses.Students.create(
           {
             userId: student.email,
@@ -123,13 +124,13 @@ function addStudentsToClass(classroomId, sisClassId, log = true) {
             enrollmentStatus = "added";
           }
         }
-        console.log('Logging enrollment', student.email, enrollmentStatus, err ? err.message : '');
+        logOperation('SISEnrollmentSheet', 'sisEnrollmentSheet.updateRow', 'updating row');
         sisEnrollmentSheet.updateRow({
           enrollmentKey: `${student.email}+${classroomId}`,
           classroomId,
           studentEmail: student.email,
-          studentName: student.name || "",
-          sisStudentId: student.sisId || "",
+          studentName: `${student.givenName || ""} ${student.familyName || ""}`,
+          sisStudentId: student.sourcedId || "",
           enrollmentDate: new Date().toISOString(),
           enrollmentStatus,
           error: err ? err.message : "",
@@ -137,6 +138,14 @@ function addStudentsToClass(classroomId, sisClassId, log = true) {
       }
     }
 
+    if (log) {
+      logOperation('SISEnrollmentSheet', 'sisClassesTable.updateRow', 'updating row with class-last-added...');
+      let sisClassesTable = getSISClassesTable();
+      sisClassesTable.updateRow({
+        sisClassId,
+        lastAddedStudents: new Date(),
+      });
+    }
     return results;
   } catch (error) {
     throw error;

@@ -23,7 +23,7 @@ function zeroPad(num, len) {
   return s;
 }
 
-const doTimeLogging = false; // switch to turn on verbose logging to troubleshoot/optimize
+const doTimeLogging = 0; // switch to turn on verbose logging to troubleshoot/optimize
 
 // Lightweight timestamped operation logger for debugging performance/breadcrumbs
 function logOperation(filename, callname, desc) {

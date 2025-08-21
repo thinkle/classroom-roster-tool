@@ -1,4 +1,4 @@
-/* global SpreadsheetApp, HtmlService, getSISSchools, getSyncSetting, setSyncSetting, getDefaultConverter, initializeSISSyncSystem, initializeTermSettings, stageTermSettingsAndPreview, previewClasses, bulkSyncClasses, getSISClassesWithFilter, getSISClassesTable, resolveTermSettingsForClass, isAfterDate, addStudentsToClass, logSyncOperation, logOperation */
+/* global SpreadsheetApp, HtmlService, getSISSchools, getSyncSetting, setSyncSetting, getDefaultConverter, initializeSISSyncSystem, initializeTermSettings, stageTermSettingsAndPreview, previewClasses, bulkSyncClasses, getSISClassesWithFilter, getSISClassesTable, resolveTermSettingsForClass, isAfterDate, addStudentsToClass, addTeachersToClass, logSyncOperation, logOperation, getTeacherEnrollmentsTable */
 
 // Spreadsheet menu wiring and no-arg handlers for IACS flows
 
@@ -12,6 +12,7 @@ function setupTermMenus(ui) {
     .addItem("Preview - IACS", "previewSISSyncCourseData")
     .addItem("Create - IACS", "createSISSyncClasses")
     .addItem("Add Students - IACS", "addSISSyncStudents")
+    .addItem("Add Teachers - IACS", "addSISSyncTeachers")
     .addSeparator()
     .addItem("Status Report", "getSyncStatusReport")
     .addToUi();
@@ -44,15 +45,76 @@ function testAddSISSyncStudents() {
   }
 }
 
+function testAddSISSyncTeachers() {
+  let sisID = ''; // Put your SIS class ID here
+  let classes = getSISClassesTable();
+  for (let row of classes) {
+    if (row.sisClassId === sisID) {
+      let res = addTeachersToClass(row.gcId, row.sisClassId);
+      console.log(JSON.stringify(res, null, 2));
+      return res;
+    }
+  }
+  console.log(`Class with SIS ID ${sisID} not found in classes table`);
+  return null;
+}
+
+function testSISSyncStudents() {
+  let sisID = ''; // Put your SIS class ID here
+  // look up sisID in table of classes, find GC ID, add students
+  let classes = getSISClassesTable();
+  for (let row of classes) {
+    if (row.sisClassId === sisID) {
+      let res = addStudentsToClass(row.gcId, row.sisClassId);
+      console.log(JSON.stringify(res, null, 2));
+      return res;
+    }
+  }
+  console.log(`Class with SIS ID ${sisID} not found in classes table`);
+  return null;
+}
+
 function addSISSyncStudents() {
   const filter = { schools: getSyncSetting("enabledSchools", "").split(",").filter(Boolean) };
-  const classes = getSISClassesWithFilter(filter);
+  let classes = getSISClassesWithFilter(filter);
   const batchId = `students_${new Date().getTime()}`;
   let total = 0, added = 0, skipped = 0, failures = 0;
   const classTable = getSISClassesTable();
 
   const enrollmentTable = getStudentEnrollmentsTable();
 
+  // Now we're going to sort the classes by date of last student addition, with
+  // classes with no additions at the start of the list.
+  // Classes that are not on our class list at all are at the end of the list
+  // since we won't be able to add students to them.
+  classes.sort((a, b) => {
+    const aRow = classTable.getRow(a.sourcedId);
+    const bRow = classTable.getRow(b.sourcedId);
+    if (!aRow && !bRow) {
+      return Infinity;
+    } else if (!aRow) {
+      return 1;
+    } else if (!bRow) {
+      return -1;
+    }
+
+    const aEnrollDate = aRow.lastAddedStudents || -1;
+    const bEnrollDate = bRow.lastAddedStudents || -1;
+    return aEnrollDate - bEnrollDate;
+  });
+  classes = classes.filter((cls) => {
+    const classTableRow = classTable.getRow(cls.sourcedId);
+    if (!classTableRow || !classTableRow.gcId) {
+      return false;
+    }
+    if (classTableRow.lastAddedStudents < Date.now() - 12 * 60 * 60 * 1000) {
+      // Only include classes where we haven't added students in the last 12 hours
+      return true;
+    }
+  });
+  console.log('+++Processing up to ', classes.length, ' classes for student additions');
+  let totalClasses = 0;
+  let processedCount = 0;
   classes.forEach(cls => {
     try {
       const ts = resolveTermSettingsForClass(cls);
@@ -83,10 +145,59 @@ function addSISSyncStudents() {
       failures += 1;
       logSyncOperation("add_students", "failed", { sisClassId: cls.sourcedId, error: e.message, batchId });
     }
+    console.log(`+++Processed ${++processedCount} of ${classes.length} classes for student additions`);
   });
 
   try {
     SpreadsheetApp.getActive().toast(`Added ${added}/${total}, skipped ${skipped}, failures ${failures}`, "SIS Sync", 5);
+  } catch (e) {
+    // Toast not available in some contexts; ignore
+  }
+  return { total, added, skipped, failures, batchId };
+}
+
+function addSISSyncTeachers() {
+  const filter = { schools: getSyncSetting("enabledSchools", "").split(",").filter(Boolean) };
+  const classes = getSISClassesWithFilter(filter);
+  const batchId = `teachers_${new Date().getTime()}`;
+  let total = 0, added = 0, skipped = 0, failures = 0;
+  const classTable = getSISClassesTable();
+
+  classes.forEach(cls => {
+    try {
+      const ts = resolveTermSettingsForClass(cls);
+      if (!ts.enabled) {
+        console.log('teacherSync: Term not enabled - skipping');
+        skipped += 1;
+        return;
+      }
+      const row = classTable.getRow(cls.sourcedId);
+      if (!row || !row.gcId) {
+        console.log('teacherSync: No GC ID - skipping');
+        skipped += 1;
+        return;
+      }
+
+      const res = addTeachersToClass(row.gcId, cls.sourcedId);
+
+      total += res.total || 0;
+      added += res.added || 0;
+      if (res.errors && res.errors.length) { failures += res.errors.length; }
+
+      logSyncOperation("add_teachers", "success", {
+        sisClassId: cls.sourcedId,
+        classroomId: row.gcId,
+        batchId,
+        info: { added: res.added || 0, total: res.total || 0, errors: (res.errors || []).length }
+      });
+    } catch (e) {
+      failures += 1;
+      logSyncOperation("add_teachers", "failed", { sisClassId: cls.sourcedId, error: e.message, batchId });
+    }
+  });
+
+  try {
+    SpreadsheetApp.getActive().toast(`Added ${added}/${total} teachers, skipped ${skipped}, failures ${failures}`, "SIS Sync", 5);
   } catch (e) {
     // Toast not available in some contexts; ignore
   }

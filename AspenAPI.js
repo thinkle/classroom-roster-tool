@@ -375,6 +375,41 @@ function getStudentsForClass(classId) {
 }
 
 /**
+ * Get teachers for a SIS class
+ * @param {string} classId - SIS class ID
+ * @returns {Array} Array of teacher objects with email addresses
+ */
+function getTeachersForClass(classId) {
+  try {
+    const token = authenticateWithSIS();
+    const baseUrl = getSISUrl();
+    const cleanBaseUrl = baseUrl.replace(/\/+$/, "");
+    const teachersUrl = `${cleanBaseUrl}/classes/${classId}/teachers?limit=100&offset=0`;
+
+    const response = UrlFetchApp.fetch(teachersUrl, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.getResponseCode() !== 200) {
+      throw new Error(
+        `Failed to get class teachers: ${response.getResponseCode()}`
+      );
+    }
+
+    const data = JSON.parse(response.getContentText());
+    const teachers = data.users || [];
+
+    // Filter to ensure we only have teachers with email addresses
+    return teachers.filter((user) => user && user.email);
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
  * Clear the SIS cache (useful for testing or if data becomes stale)
  */
 function clearSISCache() {

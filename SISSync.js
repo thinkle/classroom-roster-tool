@@ -1,4 +1,4 @@
-/* global getSyncSetting, initializeTermSettings, resolveTermSettingsForClass, isAfterDate, applyTermSettingsToParams, getSISClassesWithFilter, getGoogleClassroomCreateParams, gatherClassroomData, createCourse, iacsStandardConverter, iacsTestConverter, SISClassesSheet, SISTermSettingsSheet, SyncHistorySheet, StudentEnrollmentsSheet, SISSyncSettingsSheet, initializeSyncSettings, getSyncedClass, recordSISClass, logOperation */
+/* global getSyncSetting, initializeTermSettings, resolveTermSettingsForClass, isAfterDate, applyTermSettingsToParams, getSISClassesWithFilter, getGoogleClassroomCreateParams, gatherClassroomData, createCourse, iacsStandardConverter, iacsTestConverter, SISClassesSheet, SISTermSettingsSheet, SyncHistorySheet, StudentEnrollmentsSheet, TeacherEnrollmentsSheet, SISSyncSettingsSheet, initializeSyncSettings, getSyncedClass, recordSISClass, logOperation */
 
 // Orchestration for preview/create/bulk flows and status
 
@@ -142,6 +142,7 @@ function initializeSISSyncSystem() {
   SISTermSettingsSheet().reset(); SISTermSettingsSheet().format();
   SyncHistorySheet().reset(); SyncHistorySheet().format();
   StudentEnrollmentsSheet().reset(); StudentEnrollmentsSheet().format();
+  TeacherEnrollmentsSheet().reset(); TeacherEnrollmentsSheet().format();
   SISSyncSettingsSheet().reset(); SISSyncSettingsSheet().format();
   initializeSyncSettings();
   return { success: true };
