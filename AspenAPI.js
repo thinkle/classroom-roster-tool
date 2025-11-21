@@ -550,16 +550,19 @@ function testSISSetup() {
  * Returns an array of objects with at least: { sourcedId, title, termCode, startDate, endDate, schoolYear }
  */
 function getSISTermsForSchool(schoolId) {
+  console.log(`[getSISTermsForSchool] Fetching terms for school: ${schoolId}`);
   const token = authenticateWithSIS();
   const baseUrl = getSISUrl();
   const cleanBaseUrl = baseUrl.replace(/\/+$/, "");
 
   function fetchJson(url) {
+    console.log(`[getSISTermsForSchool] Trying URL: ${url}`);
     const resp = UrlFetchApp.fetch(url, {
       headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
       muteHttpExceptions: true,
     });
     const code = resp.getResponseCode();
+    console.log(`[getSISTermsForSchool] Response code: ${code}`);
     return { code, text: resp.getContentText() };
   }
 
@@ -575,18 +578,21 @@ function getSISTermsForSchool(schoolId) {
       const { code, text } = fetchJson(urlsToTry[i]);
       if (code === 200) {
         const data = JSON.parse(text);
+        console.log(`[getSISTermsForSchool] Parsed response keys:`, Object.keys(data));
         items = Array.isArray(data)
           ? data
           : (data.terms || data.academicSessions || data.results || []);
+        console.log(`[getSISTermsForSchool] Found ${items.length} items from ${urlsToTry[i]}`);
         if (items && items.length) break;
       }
     } catch (e) {
-      /* continue */
+      console.error(`[getSISTermsForSchool] Error fetching ${urlsToTry[i]}:`, e);
     }
   }
 
   // Fallback: fetch all terms
   if (!items || !items.length) {
+    console.log(`[getSISTermsForSchool] No school-specific terms found, trying global endpoint`);
     try {
       const { code, text } = fetchJson(
         `${cleanBaseUrl}/terms?limit=1000&offset=0&orderBy=asc`
@@ -596,11 +602,14 @@ function getSISTermsForSchool(schoolId) {
         items = Array.isArray(data)
           ? data
           : (data.terms || data.academicSessions || data.results || []);
+        console.log(`[getSISTermsForSchool] Found ${items.length} items from global /terms`);
       }
     } catch (e) {
-      /* ignore */
+      console.error(`[getSISTermsForSchool] Error fetching global terms:`, e);
     }
   }
+
+  console.log(`[getSISTermsForSchool] Total items to normalize: ${items.length}`);
 
   // Normalize terms
   const normalized = (items || []).map((t) => {
@@ -635,6 +644,11 @@ function getSISTermsForSchool(schoolId) {
       schoolYear,
     };
   });
+
+  console.log(`[getSISTermsForSchool] Normalized ${normalized.length} terms`);
+  if (normalized.length > 0) {
+    console.log(`[getSISTermsForSchool] Sample normalized term:`, JSON.stringify(normalized[0], null, 2));
+  }
 
   return normalized;
 }

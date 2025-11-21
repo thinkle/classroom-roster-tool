@@ -38,5 +38,6 @@ function logSyncOperation(action, status, details) {
     infoJson: details && details.info ? JSON.stringify(details.info) : "",
     error: details && details.error ? String(details.error) : ""
   };
-  sheet.update(row, "timestamp");
+  // Use push() instead of update() - this is an append-only log, no need to scan 256k rows!
+  sheet.push(row);
 }

@@ -34,6 +34,67 @@ function createSISSyncClasses() {
   return bulkSyncClasses(filter, params, getDefaultConverter());
 }
 
+/**
+ * Scheduled function to automatically create classes when createCoursesAfter date is reached
+ * Set this up as a daily time-driven trigger
+ * Only creates classes that haven't been created yet and whose term settings allow it
+ */
+function scheduledCreateSISSyncClasses() {
+  logOperation("SISMenu", "scheduledCreateSISSyncClasses", "start");
+  const filter = { schools: getSyncSetting("enabledSchools", "").split(",").filter(Boolean) };
+  const params = {};
+
+  // Get all classes from SIS
+  const allClasses = getSISClassesWithFilter(filter);
+  const classTable = getSISClassesTable();
+
+  let eligible = 0, created = 0, skipped = 0, alreadyExists = 0;
+
+  allClasses.forEach(sisClass => {
+    const existing = classTable.getRow(sisClass.sourcedId);
+
+    // Skip if already created
+    if (existing && existing.syncStatus === "created" && existing.gcId) {
+      alreadyExists++;
+      return;
+    }
+
+    // Check term settings to see if we should create now
+    const termSettings = applyTermSettingsToParams(sisClass, params);
+
+    if (termSettings.createEnabled) {
+      eligible++;
+      try {
+        const result = createAndLogCourseIfNotAlreadyCreated(sisClass.sourcedId, params, getDefaultConverter());
+        if (result.success && !result.alreadyExists && !result.skipped) {
+          console.log(`✓ Created: ${sisClass.title} (${sisClass.sourcedId})`);
+          created++;
+        } else if (result.skipped) {
+          skipped++;
+        }
+      } catch (err) {
+        console.error(`✗ Error creating ${sisClass.title}:`, err);
+      }
+    } else {
+      skipped++;
+    }
+  });
+
+  const summary = {
+    total: allClasses.length,
+    eligible,
+    created,
+    skipped,
+    alreadyExists,
+    timestamp: new Date().toISOString()
+  };
+
+  console.log("Scheduled class creation summary:", summary);
+  logOperation("SISMenu", "scheduledCreateSISSyncClasses", `done: created=${created}, skipped=${skipped}`);
+
+  return summary;
+}
+
 function testAddSISSyncStudents() {
   let theClass = 'MST000000nV9H9';
   let classes = getSISClassesTable();

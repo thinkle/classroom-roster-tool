@@ -77,6 +77,16 @@ function getSyncedClass(sisClassId) {
 
 function recordSISClass(sisClass, status = "pending", result = null) {
   const classes = getSISClassesTable();
+
+  // Get existing row to preserve created classroom data
+  const existing = classes.getRow(sisClass.sourcedId);
+
+  // If this is a preview and the class was already created, DON'T overwrite gcId or status
+  if (status === "preview" && existing && existing.syncStatus === "created" && existing.gcId) {
+    console.log(`[recordSISClass] Skipping preview for already-created class: ${sisClass.title} (${sisClass.sourcedId})`);
+    return; // Don't overwrite created classes with preview data
+  }
+
   const row = {
     sisClassId: sisClass.sourcedId,
     sisTitle: sisClass.title,

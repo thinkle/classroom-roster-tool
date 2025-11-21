@@ -93,16 +93,27 @@ function initializeTermSettings() {
     enabled: false
   };
 
+  console.log(`[initializeTermSettings] Enabled schools: ${enabledSchools.length}`, enabledSchools);
+  console.log(`[initializeTermSettings] Current year: ${currentYear}`);
+  console.log(`[initializeTermSettings] Defaults:`, defaults);
+
   let seeded = 0;
   enabledSchools.forEach(schoolId => {
     try {
+      console.log(`[initializeTermSettings] Fetching terms for school: ${schoolId}`);
       const terms = getSISTermsForSchool(schoolId) || [];
+      console.log(`[initializeTermSettings] Found ${terms.length} terms for school ${schoolId}`);
+      if (terms.length > 0) {
+        console.log(`[initializeTermSettings] Sample term:`, JSON.stringify(terms[0], null, 2));
+      }
       terms.forEach(t => {
         const schoolYear = t.schoolYear || currentYear || `${t.startDate}-${t.endDate}`;
         const termCode = t.termCode || "";
         const termTitle = t.title || "";
         const termKey = t.sourcedId;
+        console.log(`[initializeTermSettings] Processing term: ${termTitle} (${termKey}) - year: ${schoolYear}`);
         if (!termTable.hasRow(termKey)) {
+          console.log(`[initializeTermSettings] Adding new term: ${termTitle}`);
           termTable.updateRow({
             enabled: defaults.enabled,
             termKey,
@@ -119,14 +130,19 @@ function initializeTermSettings() {
             guardiansEnabled: defaults.guardiansEnabled
           });
           seeded += 1;
+        } else {
+          console.log(`[initializeTermSettings] Term already exists: ${termTitle}`);
         }
       });
     } catch (e) {
-      console.warn(`[Term Settings] Failed to fetch terms for school ${schoolId}: ${e && e.message}`);
+      console.error(`[initializeTermSettings] Failed to fetch terms for school ${schoolId}:`, e);
+      console.error(`[initializeTermSettings] Stack trace:`, e.stack);
     }
   });
 
-  console.log(`[Term Settings] Seeded ${seeded} term rows`);
+  termTable.write();
+  console.log(`[initializeTermSettings] Completed. Seeded ${seeded} term rows.`);
+  console.log(`[initializeTermSettings] Total rows in table: ${termTable.rows.length}`);
   return { success: true, seeded };
 }
 

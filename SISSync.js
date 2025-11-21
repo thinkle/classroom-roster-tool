@@ -44,6 +44,7 @@ function previewClass(sisClassId, params = {}, converter = null) {
       gcGuardiansEnabled: typeof courseParams.guardiansEnabled === "boolean" ? courseParams.guardiansEnabled : ""
     });
     logOperation("SISSync", "previewClass", `recorded id=${sisClassId}`);
+    return { success: true, sisClassId, preview: courseParams };
   } else {
     return {
       success: true,
@@ -51,7 +52,6 @@ function previewClass(sisClassId, params = {}, converter = null) {
       sisClassId
     };
   }
-  return { success: true, sisClassId, preview: courseParams };
 }
 
 function previewClasses(filter = {}, params = {}, converter = null) {
@@ -64,7 +64,7 @@ function previewClasses(filter = {}, params = {}, converter = null) {
   return results;
 }
 
-function oneOffClassTest () {
+function oneOffClassTest() {
   createAndLogCourseIfNotAlreadyCreated("MST000000nV8EA");
 }
 
@@ -81,8 +81,28 @@ function createAndLogCourseIfNotAlreadyCreated(sisClassId, params = {}, converte
     recordSISClass(classroomData.sisClass, "pending");
     const finalConverter = converter || getDefaultConverter();
     const courseParams = getGoogleClassroomCreateParams(sisClassId, termResolvedSettings.params, finalConverter);
+
+    // Validate required fields before attempting to create
+    if (!courseParams.ownerId) {
+      console.warn(`Skipping ${classroomData.sisClass.title} (${sisClassId}) - no teacher/owner email`);
+      recordSISClass(classroomData.sisClass, "skipped", {
+        syncError: "No teacher/owner email available"
+      });
+      return { success: true, skipped: true, sisClassId, message: "No teacher/owner email" };
+    }
+
+    if (!courseParams.name) {
+      console.warn(`Skipping ${classroomData.sisClass.title} (${sisClassId}) - no course name`);
+      recordSISClass(classroomData.sisClass, "skipped", {
+        syncError: "No course name available"
+      });
+      return { success: true, skipped: true, sisClassId, message: "No course name" };
+    }
+
     const classroom = createGoogleClassroom(courseParams);
 
+    console.log(`✓ Created classroom: ${courseParams.name} (${sisClassId}) -> GC ID: ${classroom.id}`);
+    
     recordSISClass(classroomData.sisClass, "created", {
       gcId: classroom.id,
       gcName: courseParams.name || "",
