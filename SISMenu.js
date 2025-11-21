@@ -158,10 +158,37 @@ function addSISSyncStudents() {
 
 function addSISSyncTeachers() {
   const filter = { schools: getSyncSetting("enabledSchools", "").split(",").filter(Boolean) };
-  const classes = getSISClassesWithFilter(filter);
+  let classes = getSISClassesWithFilter(filter);
   const batchId = `teachers_${new Date().getTime()}`;
   let total = 0, added = 0, skipped = 0, failures = 0;
   const classTable = getSISClassesTable();
+
+  classes.sort((a, b) => {
+    const aRow = classTable.getRow(a.sourcedId);
+    const bRow = classTable.getRow(b.sourcedId);
+    if (!aRow && !bRow) {
+      return Infinity;
+    } else if (!aRow) {
+      return 1;
+    } else if (!bRow) {
+      return -1;
+    }
+    const aEnrollDate = aRow.lastAddedTeachers || -1;
+    const bEnrollDate = bRow.lastAddedTeachers || -1;
+    return aEnrollDate - bEnrollDate;
+  });
+  classes = classes.filter((cls) => {
+    const classTableRow = classTable.getRow(cls.sourcedId);
+    if (!classTableRow || !classTableRow.gcId) {
+      return false;
+    }
+    if (classTableRow.lastAddedTeachers < Date.now() - 12 * 60 * 60 * 1000) {
+      // Only include classes where we haven't added teachers in the last 12 hours
+      return true;
+    }
+  });
+  let processedCount = 0;
+  console.log('+++Processing up to ', classes.length, ' classes for teacher additions');
 
   classes.forEach(cls => {
     try {
@@ -194,6 +221,8 @@ function addSISSyncTeachers() {
       failures += 1;
       logSyncOperation("add_teachers", "failed", { sisClassId: cls.sourcedId, error: e.message, batchId });
     }
+    processedCount += 1;
+    console.log(`+++Processed ${processedCount} of ${classes.length} classes for teacher additions`);
   });
 
   try {

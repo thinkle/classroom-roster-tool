@@ -64,6 +64,10 @@ function previewClasses(filter = {}, params = {}, converter = null) {
   return results;
 }
 
+function oneOffClassTest () {
+  createAndLogCourseIfNotAlreadyCreated("MST000000nV8EA");
+}
+
 function createAndLogCourseIfNotAlreadyCreated(sisClassId, params = {}, converter = null) {
   const existing = getSyncedClass(sisClassId);
   if (existing && existing.syncStatus === "created" && existing.gcId) {
